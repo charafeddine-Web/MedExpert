@@ -1,13 +1,12 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>JSP - Hello I'm the King </title>
+    <title>MedExpert - Accueil</title>
 </head>
 <body>
-<h1><%= "Hello I'm the King " %>
-</h1>
-<br/>
-<a href="hello-servlet">Hello Servlet</a>
+<h1>Bienvenue sur MedExpert</h1>
+<p>Pour tester la connexion à la base, cliquez sur le lien ci-dessous :</p>
+<a href="test-connexion">Tester la connexion à la DB</a>
 </body>
 </html>
