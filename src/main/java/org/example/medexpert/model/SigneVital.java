@@ -1,4 +1,4 @@
 package org.example.medexpert.model;
 
-public class Medecin {
+public class SigneVital {
 }
