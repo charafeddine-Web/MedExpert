@@ -34,6 +34,12 @@ public class DemandeExpertise {
     @JoinColumn(name = "specialiste_id", nullable = false)
     private Specialiste specialiste;
 
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "consultation_id", unique = true)
+    private Consultation consultation;
+
+
     public DemandeExpertise() {}
 
     public DemandeExpertise(String question, String priorite, LocalDateTime dateDemande, StatutExpertise status, String avis, LocalDateTime dateAvis, Specialiste specialiste) {

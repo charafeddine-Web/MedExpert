@@ -41,6 +41,9 @@ public class Consultation {
     @OneToMany(mappedBy = "consultation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ActeMedical> actes;
 
+    @OneToOne(mappedBy = "consultation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private DemandeExpertise demandeExpertise;
+
 
     public Consultation(){};
 
