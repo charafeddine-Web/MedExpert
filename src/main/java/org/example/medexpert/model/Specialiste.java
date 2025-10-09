@@ -1,11 +1,13 @@
 package org.example.medexpert.model;
 
 import jakarta.persistence.*;
+import org.example.medexpert.model.enums.TypeUtilisateur;
+
 import java.util.List;
 
 @Entity
 @Table(name = "specialistes")
-public class Specialiste {
+public class Specialiste extends  Utilisateur{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +24,14 @@ public class Specialiste {
 
     public Specialiste() {}
 
-    public Specialiste(String specialite) {
-        this.specialite = specialite;
-    }
 
+    public Specialiste(String nom, String prenom, String email, String motDePasse, TypeUtilisateur role, Long id, String specialite, List<DemandeExpertise> demandeList, List<Creneau> creneaux) {
+        super(nom, prenom, email, motDePasse, role);
+        this.id = id;
+        this.specialite = specialite;
+        this.demandeList = demandeList;
+        this.creneaux = creneaux;
+    }
 
     public Long getId() {
         return id;

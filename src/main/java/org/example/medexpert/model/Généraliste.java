@@ -18,7 +18,7 @@ public class Généraliste extends Utilisateur {
     public Généraliste() {}
 
     public Généraliste(Long id, String nom, String prenom, String email, String motDePasse, TypeUtilisateur role, List<Consultation> consultationList) {
-        super(id, nom, prenom, email, motDePasse, role);
+        super( nom, prenom, email, motDePasse, role);
         this.consultationList = consultationList;
     }
 

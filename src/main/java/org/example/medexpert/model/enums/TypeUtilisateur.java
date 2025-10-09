@@ -1,7 +1,9 @@
 package org.example.medexpert.model.enums;
 
 public enum TypeUtilisateur {
+    USER,
     ADMIN,
     INFIRMIER,
-    MEDECIN
+    MEDECIN_GENERALISTE,
+    MEDECIN_SPECIALISTE
 }

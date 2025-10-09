@@ -29,24 +29,18 @@ public class Utilisateur {
     @Column(nullable = false)
     private TypeUtilisateur role;
 
-    public Utilisateur(){};
 
-    public Utilisateur(Long id, String nom, String prenom, String email, String motDePasse, TypeUtilisateur role) {
-        this.id = id;
+    public Utilisateur( String nom, String prenom, String email, String motDePasse, TypeUtilisateur role) {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.motDePasse = motDePasse;
         this.role = role;
     }
+    public Utilisateur(){};
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+
 
     public String getNom() {
         return nom;
