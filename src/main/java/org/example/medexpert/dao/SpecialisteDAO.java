@@ -1,29 +1,28 @@
 package org.example.medexpert.dao;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import org.example.medexpert.model.Specialiste;
+import org.example.medexpert.util.JpaUtil;
 import java.util.List;
 
 public class SpecialisteDAO {
-
-    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
+    EntityManager em = JpaUtil.getEntityManager();
 
     public void create(Specialiste specialiste) {
-        EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             em.persist(specialiste);
             em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
         } finally {
             em.close();
         }
     }
 
     public Specialiste findById(Long id) {
-        EntityManager em = emf.createEntityManager();
         try {
             return em.find(Specialiste.class, id);
         } finally {
@@ -32,7 +31,6 @@ public class SpecialisteDAO {
     }
 
     public List<Specialiste> findAll() {
-        EntityManager em = emf.createEntityManager();
         try {
             TypedQuery<Specialiste> query = em.createQuery("SELECT s FROM Specialiste s", Specialiste.class);
             return query.getResultList();
@@ -42,18 +40,19 @@ public class SpecialisteDAO {
     }
 
     public void update(Specialiste specialiste) {
-        EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             em.merge(specialiste);
             em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
         } finally {
             em.close();
         }
     }
 
     public void delete(Long id) {
-        EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             Specialiste specialiste = em.find(Specialiste.class, id);
@@ -61,6 +60,9 @@ public class SpecialisteDAO {
                 em.remove(specialiste);
             }
             em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
         } finally {
             em.close();
         }
