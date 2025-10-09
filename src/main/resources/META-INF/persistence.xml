@@ -10,7 +10,7 @@
         <class>org.example.medexpert.model.Utilisateur</class>
         <class>org.example.medexpert.model.Généraliste</class>
         <class>org.example.medexpert.model.Infirmier</class>
-        <class>org.example.medexpert.model.Spécialiste</class>
+        <class>org.example.medexpert.model.Specialiste</class>
         <class>org.example.medexpert.model.Consultation</class>
         <class>org.example.medexpert.model.Creneau</class>
         <class>org.example.medexpert.model.Patient</class>

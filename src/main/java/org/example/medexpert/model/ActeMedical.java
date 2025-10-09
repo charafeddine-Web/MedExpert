@@ -18,6 +18,11 @@ public class ActeMedical {
     @Column(nullable = false)
     private Double cout;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "consultation_id", nullable = false)
+    private Consultation consultation;
+
+
     public ActeMedical() {}
 
     public ActeMedical(TypeActe typeActe, Double cout) {

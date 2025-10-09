@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.example.medexpert.model.enums.StatutConsultation;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name= "consultations")
@@ -36,6 +37,10 @@ public class Consultation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "generaliste_id", nullable = false)
     private Généraliste generaliste;
+
+    @OneToMany(mappedBy = "consultation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ActeMedical> actes;
+
 
     public Consultation(){};
 
