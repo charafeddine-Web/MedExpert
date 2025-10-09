@@ -1,4 +1,4 @@
-package org.example.medexpert;
+package org.example.medexpert.controller;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
