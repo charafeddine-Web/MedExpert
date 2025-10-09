@@ -44,6 +44,9 @@ public class Consultation {
     @OneToOne(mappedBy = "consultation", cascade = CascadeType.ALL, orphanRemoval = true)
     private DemandeExpertise demandeExpertise;
 
+    @OneToOne(mappedBy = "consultation", cascade = CascadeType.ALL)
+    private SigneVital signeVital;
+
 
     public Consultation(){};
 
