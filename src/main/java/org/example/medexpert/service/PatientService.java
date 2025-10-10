@@ -27,4 +27,12 @@ public class PatientService {
     public void supprimerPatient(Long id) {
         patientDAO.delete(id);
     }
+
+    public List<Patient> getPatientsDuJour() {
+        return patientDAO.findPatientsDuJour();
+    }
+
+//    public List<Object[]> getDerniersSignesVitauxPatientsDuJour() {
+//        return patientDAO.findDerniersSignesVitauxPatientsDuJour();
+//    }
 }

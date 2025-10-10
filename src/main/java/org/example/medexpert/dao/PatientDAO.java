@@ -71,4 +71,31 @@ public class PatientDAO {
             em.close();
         }
     }
+
+    public List<Patient> findPatientsDuJour() {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            TypedQuery<Patient> query = em.createQuery(
+                "SELECT DISTINCT c.dossier.patient FROM Consultation c WHERE DATE(c.dateConsultation) = CURRENT_DATE",
+                Patient.class
+            );
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+//    public List<Object[]> findDerniersSignesVitauxPatientsDuJour() {
+//        EntityManager em = JpaUtil.getEntityManager();
+//        try {
+//            TypedQuery<Object[]> query = em.createQuery(
+//                "SELECT p, sv FROM Consultation c JOIN c.dossier.patient p JOIN p.signesVitaux sv " +
+//                "WHERE DATE(c.dateConsultation) = CURRENT_DATE AND sv.datePrise = (SELECT MAX(sv2.datePrise) FROM SigneVital sv2 WHERE sv2.patient = p)",
+//                Object[].class
+//            );
+//            return query.getResultList();
+//        } finally {
+//            em.close();
+//        }
+//    }
 }
