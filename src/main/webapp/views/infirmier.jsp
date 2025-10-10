@@ -21,9 +21,8 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center ">
-<div class="w-full max-w-5xl bg-white/90 rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden fade-in">
-    <!-- Menu latéral -->
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-fuchsia-100 via-rose-100 to-orange-100">
+<div class="w-full bg-white/90 rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden fade-in">
     <nav class="md:w-1/4 bg-gradient-to-br from-rose-400 to-orange-300 p-8 flex flex-col items-center justify-between text-white">
         <div class="flex flex-col items-center gap-4">
             <svg class="w-16 mb-2 animate-bounce" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -46,18 +45,23 @@
         </div>
         <div class="mt-8 text-xs text-white/80">© <%= java.time.Year.now() %> MedExpert</div>
     </nav>
-    <!-- Contenu principal -->
+
     <main class="md:w-3/4 w-full flex flex-col gap-10 p-6 md:p-10 items-center justify-center">
-        <!-- Enregistrer un patient -->
-        <section id="enregistrer" class="w-full max-w-2xl mx-auto mb-8">
+        <section id="enregistrer" class="w-full mb-8">
             <h3 class="text-xl font-bold text-rose-600 mb-4 text-center">Enregistrer un patient</h3>
             <form action="<%=request.getContextPath()%>/infirmier" method="post" class="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-6 items-center justify-center">
                 <div class="flex-1 flex flex-col gap-2 w-full">
                     <input type="text" name="nom" placeholder="Nom du patient" required class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
                     <input type="text" name="prenom" placeholder="Prénom du patient" required class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
                     <input type="date" name="dateNaissance" placeholder="Date de naissance" required class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
+                    <input type="text" name="adresse" placeholder="Adresse" class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
+                    <input type="text" name="numSecuriteSociale" placeholder="Numéro Sécurité Sociale" class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
+                    <input type="text" name="mutuelle" placeholder="Mutuelle (Oui/Non)" class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
                 </div>
                 <div class="flex-1 flex flex-col gap-2 w-full">
+                    <input type="text" name="antecedents" placeholder="Antécédents médicaux" class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-gray-50 transition" />
+                    <input type="text" name="allergies" placeholder="Allergies" class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-gray-50 transition" />
+                    <input type="text" name="traitementsEnCours" placeholder="Traitements en cours" class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-gray-50 transition" />
                     <input type="number" step="0.1" name="temperature" placeholder="Température (°C)" class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-gray-50 transition" />
                     <input type="number" step="1" name="frequenceCardiaque" placeholder="Fréquence cardiaque (bpm)" class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-gray-50 transition" />
                     <input type="number" step="1" name="tension" placeholder="Tension (mmHg)" class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-gray-50 transition" />
@@ -66,8 +70,7 @@
                 <button type="submit" class="h-12 px-8 rounded-xl bg-gradient-to-r from-rose-500 to-orange-400 text-white font-bold text-lg shadow-lg hover:from-rose-600 hover:to-orange-500 transition-all duration-300 transform hover:scale-105 mt-4 md:mt-0">Enregistrer</button>
             </form>
         </section>
-        <!-- Liste des patients du jour -->
-        <section id="liste" class="w-full max-w-3xl mx-auto mb-8">
+        <section id="liste" class="w-full mb-8">
             <h3 class="text-xl font-bold text-rose-600 mb-4 text-center">Patients du jour</h3>
             <div class="overflow-x-auto rounded-xl shadow">
                 <table class="min-w-full bg-white rounded-xl">
