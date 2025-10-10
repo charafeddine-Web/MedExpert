@@ -1,7 +1,11 @@
 package org.example.medexpert.service;
 
+import jakarta.servlet.http.HttpSession;
 import org.example.medexpert.dao.UtilisateurDAO;
 import org.example.medexpert.model.Utilisateur;
+import org.example.medexpert.model.Specialiste;
+import org.example.medexpert.model.Infirmier;
+
 import org.example.medexpert.model.enums.TypeUtilisateur;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -18,10 +22,10 @@ public class UtilisateurService {
         Utilisateur u;
         switch (role) {
             case MEDECIN_SPECIALISTE:
-                u = new org.example.medexpert.model.Specialiste(nom, prenom, email, hashed, role, null, specialite, null, null);
+                u = new Specialiste(nom, prenom, email, hashed, role, null, specialite, null, null);
                 break;
             case INFIRMIER:
-                u = new org.example.medexpert.model.Infirmier(nom, prenom, email, hashed, role, service);
+                u = new Infirmier(nom, prenom, email, hashed, role, service);
                 break;
             default:
                 u = new Utilisateur(nom, prenom, email, hashed, role);
@@ -49,5 +53,11 @@ public class UtilisateurService {
         }
         return false;
 
+    }
+
+    public void logout(HttpSession session) {
+        if (session != null) {
+            session.invalidate();
+        }
     }
 }

@@ -25,7 +25,25 @@ public class LoginServlet extends HttpServlet {
         if (u != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", u);
-            response.sendRedirect("views/dashboard.jsp");
+            String redirectUrl = "views/patient.jsp";
+            switch (u.getRole()) {
+                case MEDECIN_GENERALISTE:
+                    redirectUrl = "views/generaliste.jsp";
+                    break;
+                case INFIRMIER:
+                    redirectUrl = "views/infirmier.jsp";
+                    break;
+                case MEDECIN_SPECIALISTE:
+                    redirectUrl = "views/specialiste.jsp";
+                    break;
+                case PATIENT:
+                    redirectUrl = "views/patient.jsp";
+                    break;
+                default:
+                    redirectUrl = "views/login.jsp";
+                    break;
+            }
+            response.sendRedirect(redirectUrl);
         } else {
             request.setAttribute("error", "Email ou mot de passe incorrect");
             request.getRequestDispatcher("views/login.jsp").forward(request, response);
