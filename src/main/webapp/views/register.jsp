@@ -51,8 +51,8 @@
                 <option value="">Sélectionnez un rôle</option>
                 <option value="PATIENT">Patient</option>
                 <option value="INFIRMIER">Infirmier</option>
-                <option value="GENERALISTE">Généraliste</option>
-                <option value="SPECIALISTE">Spécialiste</option>
+                <option value="MEDECIN_GENERALISTE">Généraliste</option>
+                <option value="MEDECIN_SPECIALISTE">Spécialiste</option>
             </select>
         </div>
         <button type="submit" class="w-full py-2 mt-2 rounded bg-gradient-to-r from-blue-700 to-sky-400 text-white font-bold text-lg shadow hover:from-blue-800 hover:to-sky-500 transition">Créer le compte</button>

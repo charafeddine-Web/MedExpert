@@ -11,6 +11,14 @@ public class SigneVital {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
+
+    @OneToOne
+    @JoinColumn(name = "consultation_id", unique = true)
+    private Consultation consultation;
+
     private Double tension;
     private Double frequenceCardiaque;
     private Double temperature;
@@ -22,8 +30,11 @@ public class SigneVital {
     public SigneVital() {
     }
 
-    public SigneVital(Long id, Double tension, Double frequenceCardiaque, Double temperature, Double frequenceRespiratoire, Double poids, Double taille, LocalDateTime dateMesure, Consultation consultation) {
+
+    public SigneVital(Long id, Patient patient, Consultation consultation, Double tension, Double frequenceCardiaque, Double temperature, Double frequenceRespiratoire, Double poids, Double taille, LocalDateTime dateMesure) {
         this.id = id;
+        this.patient = patient;
+        this.consultation = consultation;
         this.tension = tension;
         this.frequenceCardiaque = frequenceCardiaque;
         this.temperature = temperature;
@@ -31,13 +42,7 @@ public class SigneVital {
         this.poids = poids;
         this.taille = taille;
         this.dateMesure = dateMesure;
-        this.consultation = consultation;
     }
-
-    @OneToOne
-    @JoinColumn(name = "consultation_id", unique = true)
-    private Consultation consultation;
-
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -65,6 +70,9 @@ public class SigneVital {
 
     public Consultation getConsultation() { return consultation; }
     public void setConsultation(Consultation consultation) { this.consultation = consultation; }
+
+    public Patient getPatient() { return patient; }
+    public void setPatient(Patient patient) { this.patient = patient; }
 
     @Override
     public String toString() {

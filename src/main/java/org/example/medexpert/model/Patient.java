@@ -27,29 +27,25 @@ public class Patient {
     @Column(name = "num_securite_sociale", unique = true)
     private String numSecuriteSociale;
 
-    @ElementCollection
-    @CollectionTable(name = "patients_antecedents", joinColumns = @JoinColumn(name = "patient_id"))
-    @Column(name = "antecedent")
-    private List<String> antecedents;
+    @Column(nullable = false)
+    private String antecedents;
 
-    @ElementCollection
-    @CollectionTable(name = "patients_allergies", joinColumns = @JoinColumn(name = "patient_id"))
-    @Column(name = "allergie")
-    private List<String> allergies;
+    @Column(nullable = false)
+    private String allergies;
 
-    @ElementCollection
-    @CollectionTable(name = "patients_traitements", joinColumns = @JoinColumn(name = "patient_id"))
-    @Column(name = "traitement")
-    private List<String> traitementsEnCours;
+    @Column(nullable = false)
+    private String traitementsEnCours;
 
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     private DossierMedical dossier;
 
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<SigneVital> signesVitaux;
+
     public Patient() {}
 
-    public Patient(String nom, String prenom, LocalDateTime dateArrivee, String adresse,
-                   Boolean mutuelle, String numSecuriteSociale, List<String> antecedents,
-                   List<String> allergies, List<String> traitementsEnCours) {
+    public Patient(Long id, String nom, String prenom, LocalDateTime dateArrivee, String adresse, Boolean mutuelle, String numSecuriteSociale, String antecedents, String allergies, String traitementsEnCours, DossierMedical dossier, List<SigneVital> signesVitaux) {
+        this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.dateArrivee = dateArrivee;
@@ -59,6 +55,8 @@ public class Patient {
         this.antecedents = antecedents;
         this.allergies = allergies;
         this.traitementsEnCours = traitementsEnCours;
+        this.dossier = dossier;
+        this.signesVitaux = signesVitaux;
     }
 
     // Getters & Setters
@@ -82,14 +80,14 @@ public class Patient {
     public String getNumSecuriteSociale() { return numSecuriteSociale; }
     public void setNumSecuriteSociale(String numSecuriteSociale) { this.numSecuriteSociale = numSecuriteSociale; }
 
-    public List<String> getAntecedents() { return antecedents; }
-    public void setAntecedents(List<String> antecedents) { this.antecedents = antecedents; }
+    public String getAntecedents() { return antecedents; }
+    public void setAntecedents(String antecedents) { this.antecedents = antecedents; }
 
-    public List<String> getAllergies() { return allergies; }
-    public void setAllergies(List<String> allergies) { this.allergies = allergies; }
+    public String getAllergies() { return allergies; }
+    public void setAllergies(String allergies) { this.allergies = allergies; }
 
-    public List<String> getTraitementsEnCours() { return traitementsEnCours; }
-    public void setTraitementsEnCours(List<String> traitementsEnCours) { this.traitementsEnCours = traitementsEnCours; }
+    public String getTraitementsEnCours() { return traitementsEnCours; }
+    public void setTraitementsEnCours(String traitementsEnCours) { this.traitementsEnCours = traitementsEnCours; }
 
     public DossierMedical getDossier() { return dossier; }
     public void setDossier(DossierMedical dossier) { this.dossier = dossier; }

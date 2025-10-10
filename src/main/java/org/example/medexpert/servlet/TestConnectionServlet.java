@@ -16,7 +16,7 @@ public class TestConnectionServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Object utilisateur = req.getSession().getAttribute("utilisateur");
+        Object utilisateur = req.getSession().getAttribute("user");
         if (utilisateur != null) {
             resp.sendRedirect(req.getContextPath() + "/views/dashboard.jsp");
         } else {

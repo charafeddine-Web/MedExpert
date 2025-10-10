@@ -15,7 +15,7 @@ public class UtilisateurService {
             throw new IllegalArgumentException("Email already in use");
         }
         String hashed = BCrypt.hashpw(motDePasse, BCrypt.gensalt());
-        Utilisateur u = new Utilisateur (nom, prenom, email, hashed, TypeUtilisateur.USER);
+        Utilisateur u = new Utilisateur (nom, prenom, email, hashed, TypeUtilisateur.PATIENT);
         utilisateurDAO.save(u);
         return true;
     }
