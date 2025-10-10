@@ -11,7 +11,7 @@ import org.example.medexpert.service.UtilisateurService;
 
 import java.io.IOException;
 
-@WebServlet(name = "LoginServlet", value = "/login")
+@WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
     private final UtilisateurService utilisateurService = new UtilisateurService();
@@ -25,10 +25,10 @@ public class LoginServlet extends HttpServlet {
         if (u != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", u);
-            response.sendRedirect("dashboard.jsp");
+            response.sendRedirect("views/dashboard.jsp");
         } else {
             request.setAttribute("error", "Email ou mot de passe incorrect");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            request.getRequestDispatcher("views/login.jsp").forward(request, response);
         }
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorValue("GENERALISTE")
 @Table(name = "generalistes" )
 
 public class Généraliste extends Utilisateur {

@@ -47,13 +47,24 @@
         <div class="flex flex-col gap-1">
             <label for="role" class="text-gray-700 font-medium">Rôle</label>
             <select id="role" name="role" required
-                    class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50">
+                    class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50"
+                    onchange="handleRoleChange()">
                 <option value="">Sélectionnez un rôle</option>
                 <option value="PATIENT">Patient</option>
                 <option value="INFIRMIER">Infirmier</option>
                 <option value="MEDECIN_GENERALISTE">Généraliste</option>
                 <option value="MEDECIN_SPECIALISTE">Spécialiste</option>
             </select>
+        </div>
+        <div id="specialiteField" class="flex flex-col gap-1 hidden">
+            <label for="specialite" class="text-gray-700 font-medium">Spécialité</label>
+            <input type="text" id="specialite" name="specialite" placeholder="Votre spécialité médicale"
+                   class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50" />
+        </div>
+        <div id="serviceField" class="flex flex-col gap-1 hidden">
+            <label for="service" class="text-gray-700 font-medium">Service</label>
+            <input type="text" id="service" name="service" placeholder="Votre service (ex: Urgences, Pédiatrie)"
+                   class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50" />
         </div>
         <button type="submit" class="w-full py-2 mt-2 rounded bg-gradient-to-r from-blue-700 to-sky-400 text-white font-bold text-lg shadow hover:from-blue-800 hover:to-sky-500 transition">Créer le compte</button>
     </form>
@@ -64,5 +75,18 @@
         © <%= java.time.Year.now() %> MedExpert. Tous droits réservés.
     </div>
 </div>
+<script>
+    function handleRoleChange() {
+        const role = document.getElementById('role').value;
+        document.getElementById('specialiteField').classList.add('hidden');
+        document.getElementById('serviceField').classList.add('hidden');
+        if (role === 'MEDECIN_SPECIALISTE') {
+            document.getElementById('specialiteField').classList.remove('hidden');
+        } else if (role === 'INFIRMIER') {
+            document.getElementById('serviceField').classList.remove('hidden');
+        }
+    }
+    window.onload = handleRoleChange;
+</script>
 </body>
 </html>

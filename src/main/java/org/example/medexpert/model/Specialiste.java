@@ -6,6 +6,7 @@ import org.example.medexpert.model.enums.TypeUtilisateur;
 import java.util.List;
 
 @Entity
+@DiscriminatorValue("SPECIALISTE")
 @Table(name = "specialistes")
 public class Specialiste extends  Utilisateur{
 
@@ -13,7 +14,7 @@ public class Specialiste extends  Utilisateur{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String specialite;
 
     @OneToMany(mappedBy = "specialiste", cascade = CascadeType.ALL, orphanRemoval = true)

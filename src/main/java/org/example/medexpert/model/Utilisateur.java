@@ -5,6 +5,9 @@ import org.example.medexpert.model.enums.TypeUtilisateur;
 import java.util.List;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "DTYPE", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("UTILISATEUR")
 @Table(name = "utilisateurs")
 public class Utilisateur {
 

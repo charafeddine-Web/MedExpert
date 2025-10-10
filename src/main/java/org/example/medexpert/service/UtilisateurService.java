@@ -10,12 +10,22 @@ import java.util.List;
 public class UtilisateurService {
     private final UtilisateurDAO utilisateurDAO = new UtilisateurDAO();
 
-    public boolean register(String nom, String prenom, String email, String motDePasse, TypeUtilisateur typeUtilisateur) {
+    public boolean register(String nom, String prenom, String email, String motDePasse, TypeUtilisateur role, String specialite, String service) {
         if (utilisateurDAO.findByEmail(email) != null) {
             throw new IllegalArgumentException("Email already in use");
         }
         String hashed = BCrypt.hashpw(motDePasse, BCrypt.gensalt());
-        Utilisateur u = new Utilisateur (nom, prenom, email, hashed, TypeUtilisateur.PATIENT);
+        Utilisateur u;
+        switch (role) {
+            case MEDECIN_SPECIALISTE:
+                u = new org.example.medexpert.model.Specialiste(nom, prenom, email, hashed, role, null, specialite, null, null);
+                break;
+            case INFIRMIER:
+                u = new org.example.medexpert.model.Infirmier(nom, prenom, email, hashed, role, service);
+                break;
+            default:
+                u = new Utilisateur(nom, prenom, email, hashed, role);
+        }
         utilisateurDAO.save(u);
         return true;
     }
