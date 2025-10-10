@@ -1,11 +1,12 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: safiy
-  Date: 10/10/2025
-  Time: 15:26
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="org.example.medexpert.model.Patient" %>
+<%@ page import="org.example.medexpert.model.SigneVital" %>
+<%@ page import="org.example.medexpert.model.enums.StatutConsultation" %>
+<%-- Supposons que la servlet/contrôleur place dans la requête :
+     - List<Patient> patientsDuJour
+     - List<SigneVital> statutsPatients
+--%>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -20,10 +21,10 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-fuchsia-100 via-rose-100 to-orange-100">
-<div class="w-full max-w-5xl bg-white/90 rounded-3xl shadow-2xl p-0 flex flex-col md:flex-row overflow-hidden fade-in">
+<body class="min-h-screen flex items-center justify-center ">
+<div class="w-full max-w-5xl bg-white/90 rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden fade-in">
     <!-- Menu latéral -->
-    <div class="md:w-1/4 bg-gradient-to-br from-rose-400 to-orange-300 p-8 flex flex-col items-center justify-between text-white">
+    <nav class="md:w-1/4 bg-gradient-to-br from-rose-400 to-orange-300 p-8 flex flex-col items-center justify-between text-white">
         <div class="flex flex-col items-center gap-4">
             <svg class="w-16 mb-2 animate-bounce" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <ellipse cx="100" cy="170" rx="70" ry="15" fill="#fce7f3"/>
@@ -44,19 +45,19 @@
             </ul>
         </div>
         <div class="mt-8 text-xs text-white/80">© <%= java.time.Year.now() %> MedExpert</div>
-    </div>
+    </nav>
     <!-- Contenu principal -->
-    <div class="md:w-3/4 w-full flex flex-col gap-10 p-10">
+    <main class="md:w-3/4 w-full flex flex-col gap-10 p-6 md:p-10 items-center justify-center">
         <!-- Enregistrer un patient -->
-        <section id="enregistrer" class="mb-8">
-            <h3 class="text-xl font-bold text-rose-600 mb-4">Enregistrer un patient</h3>
-            <form class="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-6 items-center">
-                <div class="flex-1 flex flex-col gap-2">
+        <section id="enregistrer" class="w-full max-w-2xl mx-auto mb-8">
+            <h3 class="text-xl font-bold text-rose-600 mb-4 text-center">Enregistrer un patient</h3>
+            <form action="<%=request.getContextPath()%>/infirmier" method="post" class="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-6 items-center justify-center">
+                <div class="flex-1 flex flex-col gap-2 w-full">
                     <input type="text" name="nom" placeholder="Nom du patient" required class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
                     <input type="text" name="prenom" placeholder="Prénom du patient" required class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
                     <input type="date" name="dateNaissance" placeholder="Date de naissance" required class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
                 </div>
-                <div class="flex-1 flex flex-col gap-2">
+                <div class="flex-1 flex flex-col gap-2 w-full">
                     <input type="number" step="0.1" name="temperature" placeholder="Température (°C)" class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-gray-50 transition" />
                     <input type="number" step="1" name="frequenceCardiaque" placeholder="Fréquence cardiaque (bpm)" class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-gray-50 transition" />
                     <input type="number" step="1" name="tension" placeholder="Tension (mmHg)" class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-gray-50 transition" />
@@ -66,10 +67,10 @@
             </form>
         </section>
         <!-- Liste des patients du jour -->
-        <section id="liste" class="mb-8">
-            <h3 class="text-xl font-bold text-rose-600 mb-4">Patients du jour</h3>
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white rounded-xl shadow">
+        <section id="liste" class="w-full max-w-3xl mx-auto mb-8">
+            <h3 class="text-xl font-bold text-rose-600 mb-4 text-center">Patients du jour</h3>
+            <div class="overflow-x-auto rounded-xl shadow">
+                <table class="min-w-full bg-white rounded-xl">
                     <thead>
                         <tr class="bg-gradient-to-r from-rose-200 to-orange-100 text-rose-700">
                             <th class="px-4 py-2">Nom</th>
@@ -83,41 +84,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Exemple de ligne -->
+                    <% List<Patient> patientsDuJour = (List<Patient>) request.getAttribute("patientsDuJour");
+                       if (patientsDuJour != null && !patientsDuJour.isEmpty()) {
+                           for (Patient p : patientsDuJour) { SigneVital sv = (SigneVital) p.getSignesVitaux(); %>
                         <tr class="hover:bg-rose-50 transition">
-                            <td class="px-4 py-2 font-semibold">Dupont</td>
-                            <td class="px-4 py-2">Marie</td>
-                            <td class="px-4 py-2">1990-05-12</td>
-                            <td class="px-4 py-2">37.2°C</td>
-                            <td class="px-4 py-2">78</td>
-                            <td class="px-4 py-2">120/80</td>
-                            <td class="px-4 py-2">16</td>
-                            <td class="px-4 py-2"><span class="inline-block px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold animate-pulse">Stable</span></td>
+                            <td class="px-4 py-2 font-semibold"><%= p.getNom() %></td>
+                            <td class="px-4 py-2"><%= p.getPrenom() %></td>
+                            <td class="px-4 py-2"><%= p.getDateArrivee() %></td>
+                            <td class="px-4 py-2"><%= sv != null ? sv.getTemperature() + "°C" : "-" %></td>
+                            <td class="px-4 py-2"><%= sv != null ? sv.getFrequenceCardiaque() : "-" %></td>
+                            <td class="px-4 py-2"><%= sv != null ? sv.getTension() : "-" %></td>
+                            <td class="px-4 py-2"><%= sv != null ? sv.getFrequenceRespiratoire() : "-" %></td>
                         </tr>
-                        <!-- À remplacer par une boucle sur les patients du jour -->
+                    <%   }
+                       } else { %>
+                        <tr><td colspan="8" class="text-center text-gray-400 py-4">Aucun patient enregistré aujourd'hui.</td></tr>
+                    <% } %>
                     </tbody>
                 </table>
             </div>
         </section>
-        <!-- Statuts en temps réel -->
-        <section id="statuts">
-            <h3 class="text-xl font-bold text-rose-600 mb-4">Statuts des patients en temps réel</h3>
-            <div class="flex flex-wrap gap-4">
-                <!-- Exemple de carte statut -->
-                <div class="flex flex-col items-center bg-white rounded-xl shadow p-6 w-60 animate-pulse border-t-4 border-green-400">
-                    <span class="text-lg font-bold text-gray-700 mb-2">Marie Dupont</span>
-                    <span class="text-sm text-gray-500 mb-2">37.2°C, 78 bpm</span>
-                    <span class="inline-block px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">Stable</span>
-                </div>
-                <div class="flex flex-col items-center bg-white rounded-xl shadow p-6 w-60 animate-pulse border-t-4 border-orange-400">
-                    <span class="text-lg font-bold text-gray-700 mb-2">Ali Ben</span>
-                    <span class="text-sm text-gray-500 mb-2">38.5°C, 110 bpm</span>
-                    <span class="inline-block px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold">Surveillance</span>
-                </div>
-                <!-- À remplacer par une boucle sur les statuts réels -->
-            </div>
-        </section>
-    </div>
+    </main>
 </div>
 </body>
 </html>

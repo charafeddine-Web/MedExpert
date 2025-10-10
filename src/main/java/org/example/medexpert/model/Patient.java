@@ -44,6 +44,14 @@ public class Patient {
 
     public Patient() {}
 
+    public List<SigneVital> getSignesVitaux() {
+        return signesVitaux;
+    }
+
+    public void setSignesVitaux(List<SigneVital> signesVitaux) {
+        this.signesVitaux = signesVitaux;
+    }
+
     public Patient(Long id, String nom, String prenom, LocalDateTime dateArrivee, String adresse, Boolean mutuelle, String numSecuriteSociale, String antecedents, String allergies, String traitementsEnCours, DossierMedical dossier, List<SigneVital> signesVitaux) {
         this.id = id;
         this.nom = nom;
