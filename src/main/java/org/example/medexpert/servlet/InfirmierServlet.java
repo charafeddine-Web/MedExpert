@@ -27,6 +27,10 @@ public class InfirmierServlet extends HttpServlet {
         String nom = req.getParameter("nom");
         String prenom = req.getParameter("prenom");
         String numSecuriteSociale = req.getParameter("numSecuriteSociale");
+//        LocalDateTime dateArrivee = LocalDateTime.parse(req.getParameter("dateArrivee"));
+//        String adresse = req.getParameter("adresse");
+//        Boolean mutuelle = Boolean.valueOf(req.getParameter("mutuelle"));
+
 
         Patient patient = infirmierService.patientExiste(nom, prenom, numSecuriteSociale);
 
@@ -51,9 +55,12 @@ public class InfirmierServlet extends HttpServlet {
             String mutuelleStr = req.getParameter("mutuelle");
             LocalDateTime dateArrivee = LocalDateTime.now();
             Boolean mutuelle = mutuelleStr != null && (mutuelleStr.equalsIgnoreCase("true") || mutuelleStr.equals("1"));
+            String antecedents = req.getParameter("antecedents");
+            String allergies = req.getParameter("allergies");
+            String traitementsEnCours = req.getParameter("traitementsEnCours");
 
             Patient nouveauPatient = infirmierService.enregistrerPatient(
-                    nom, prenom, dateArrivee, adresse, mutuelle, numSecuriteSociale, "", "", ""
+                    nom, prenom, dateArrivee, adresse, mutuelle, numSecuriteSociale, antecedents, allergies, traitementsEnCours
             );
 
             SigneVital signeVital = new SigneVital();
@@ -70,7 +77,6 @@ public class InfirmierServlet extends HttpServlet {
 
             req.setAttribute("successMessage", "Patient et signe vital enregistrés avec succès.");
         }
-
         List<Patient> patientsDuJour = infirmierService.getPatientsDuJour();
         req.setAttribute("patientsDuJour", patientsDuJour);
 

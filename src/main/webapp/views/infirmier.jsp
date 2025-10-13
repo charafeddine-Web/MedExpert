@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.medexpert.model.Patient" %>
 <%@ page import="org.example.medexpert.model.SigneVital" %>
+<%@ page import="org.example.medexpert.dao.SigneVitalDAO" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -9,6 +10,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module Infirmier - MedExpert</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Script pour afficher/masquer le formulaire
+        function toggleForm() {
+            const formSection = document.getElementById("formulaire");
+            formSection.classList.toggle("hidden");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    </script>
 </head>
 <body class="bg-gray-100 min-h-screen w-full">
 <div class="flex w-full min-h-screen">
@@ -17,10 +26,18 @@
     <nav class="w-64 bg-blue-900 text-white flex flex-col items-center py-10 min-h-screen">
         <h2 class="text-2xl font-bold mb-10 tracking-wide">Module Infirmier</h2>
         <ul class="w-full space-y-2">
-            <li><a href="#formulaire" class="block px-6 py-3 rounded-lg hover:bg-blue-800 transition">Enregistrer un patient</a></li>
-            <li><a href="#liste" class="block px-6 py-3 rounded-lg hover:bg-blue-800 transition">Patients du jour</a></li>
+            <li>
+                <button onclick="toggleForm()" class="w-full text-left px-6 py-3 rounded-lg hover:bg-blue-800 transition">
+                    ➕ Ajouter un patient
+                </button>
+            </li>
+            <li>
+                <a href="#liste" class="block px-6 py-3 rounded-lg hover:bg-blue-800 transition">Patients du jour</a>
+            </li>
         </ul>
-        <div class="mt-auto text-xs text-blue-200 pt-10">© <%= java.time.Year.now() %> MedExpert</div>
+        <div class="mt-auto text-xs text-blue-200 pt-10">
+            © <%= java.time.Year.now() %> MedExpert
+        </div>
     </nav>
 
     <!-- Main content -->
@@ -63,10 +80,11 @@
                     <tbody>
                     <%
                         List<Patient> patientsDuJour = (List<Patient>) request.getAttribute("patientsDuJour");
+                        SigneVitalDAO signeVitalDAO = new SigneVitalDAO();
                         if (patientsDuJour != null && !patientsDuJour.isEmpty()) {
                             for (Patient p : patientsDuJour) {
-                                List<SigneVital> svList = p.getSignesVitaux();
-                                SigneVital dernierSV = svList.isEmpty() ? null : svList.get(svList.size() - 1);
+                                List<SigneVital> svList = signeVitalDAO.findByPatientId(p.getId());
+                                SigneVital dernierSV = (svList != null && !svList.isEmpty()) ? svList.get(svList.size() - 1) : null;
                     %>
                     <tr class="border-b hover:bg-blue-50">
                         <td class="px-6 py-4"><%= p.getNom() %></td>
@@ -82,16 +100,19 @@
                     } else {
                     %>
                     <tr>
-                        <td colspan="7" class="text-center py-8 text-gray-400">Aucun patient enregistré aujourd'hui.</td>
+                        <td colspan="7" class="text-center py-8 text-gray-400">
+                            Aucun patient enregistré aujourd'hui.
+                        </td>
                     </tr>
-                    <% } %>
+                    <%
+                        }
+                    %>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- Formulaire ajout patient / signes vitaux -->
-        <section id="formulaire" class="w-full flex flex-col items-center py-10">
+        <section id="formulaire" class="w-full flex flex-col items-center py-10 hidden">
             <h3 class="text-xl font-bold text-blue-700 mb-6">Enregistrer un patient</h3>
             <%
                 Patient patientExistant = (Patient) request.getAttribute("patientExistant");
@@ -119,6 +140,12 @@
                 <input type="text" name="numSecuriteSociale" placeholder="Numéro sécurité sociale" required class="border rounded px-4 py-2" />
                 <input type="text" name="adresse" placeholder="Adresse" class="border rounded px-4 py-2" />
                 <input type="text" name="mutuelle" placeholder="Mutuelle" class="border rounded px-4 py-2" />
+
+                <textarea name="antecedents" placeholder="Antécédents médicaux" required class="border rounded px-4 py-2 md:col-span-2"></textarea>
+
+                <textarea name="allergies" placeholder="Allergies" required class="border rounded px-4 py-2 md:col-span-2"></textarea>
+
+                <textarea name="traitementsEnCours" placeholder="Traitements en cours" required class="border rounded px-4 py-2 md:col-span-2"></textarea>
 
                 <h4 class="text-lg font-semibold text-blue-700 col-span-full mt-4 mb-2">Signes vitaux</h4>
                 <input type="number" step="0.1" name="tension" placeholder="Tension" required class="border rounded px-4 py-2" />

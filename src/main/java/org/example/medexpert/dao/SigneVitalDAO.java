@@ -67,4 +67,22 @@ public class SigneVitalDAO {
             throw e;
         }
     }
+
+    public List<SigneVital> findByPatientId(Long patientId) {
+        List<SigneVital> signesVitaux = null;
+        try {
+            TypedQuery<SigneVital> query = em.createQuery(
+                    "SELECT sv FROM SigneVital sv WHERE sv.patient.id = :patientId ORDER BY sv.id ASC",
+                    SigneVital.class
+            );
+            query.setParameter("patientId", patientId);
+            signesVitaux = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+        return signesVitaux;
+    }
+
 }
