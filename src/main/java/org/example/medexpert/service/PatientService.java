@@ -2,6 +2,7 @@ package org.example.medexpert.service;
 
 import org.example.medexpert.dao.PatientDAO;
 import org.example.medexpert.model.Patient;
+import org.example.medexpert.model.SigneVital;
 
 import java.util.List;
 
@@ -31,6 +32,13 @@ public class PatientService {
     public List<Patient> getPatientsDuJour() {
         return patientDAO.findPatientsDuJour();
     }
+
+    public Patient patientExiste(String nom, String prenom, String numSecuriteSociale){
+        return patientDAO.findByNomPrenomOuNumero(nom,prenom,numSecuriteSociale);
+    }
+
+
+
 
 //    public List<Object[]> getDerniersSignesVitauxPatientsDuJour() {
 //        return patientDAO.findDerniersSignesVitauxPatientsDuJour();
