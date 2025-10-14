@@ -11,7 +11,6 @@
     <title>Module Infirmier - MedExpert</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Script pour afficher/masquer le formulaire
         function toggleForm() {
             const formSection = document.getElementById("formulaire");
             formSection.classList.toggle("hidden");
@@ -22,7 +21,6 @@
 <body class="bg-gray-100 min-h-screen w-full">
 <div class="flex w-full min-h-screen">
 
-    <!-- Sidebar -->
     <nav class="w-64 bg-blue-900 text-white flex flex-col items-center py-10 min-h-screen">
         <h2 class="text-2xl font-bold mb-10 tracking-wide">Module Infirmier</h2>
         <ul class="w-full space-y-2">
@@ -40,10 +38,8 @@
         </div>
     </nav>
 
-    <!-- Main content -->
     <main class="flex-1 p-6 bg-gray-100 min-h-screen">
 
-        <!-- Messages -->
         <div class="max-w-3xl mx-auto mb-6">
             <%
                 String infoMessage = (String) request.getAttribute("infoMessage");
@@ -61,56 +57,7 @@
             <% } %>
         </div>
 
-        <!-- Liste des patients du jour -->
-        <section id="liste" class="w-full flex flex-col items-center py-10">
-            <h3 class="text-xl font-bold text-blue-700 mb-6">Patients du jour</h3>
-            <div class="w-full max-w-5xl overflow-x-auto rounded-xl shadow">
-                <table class="min-w-full bg-white rounded-xl">
-                    <thead>
-                    <tr>
-                        <th class="px-6 py-3 bg-blue-50 text-blue-900 font-semibold text-left">Nom</th>
-                        <th class="px-6 py-3 bg-blue-50 text-blue-900 font-semibold text-left">Prénom</th>
-                        <th class="px-6 py-3 bg-blue-50 text-blue-900 font-semibold text-left">Date d'arrivée</th>
-                        <th class="px-6 py-3 bg-blue-50 text-blue-900 font-semibold text-left">Température</th>
-                        <th class="px-6 py-3 bg-blue-50 text-blue-900 font-semibold text-left">FC</th>
-                        <th class="px-6 py-3 bg-blue-50 text-blue-900 font-semibold text-left">Tension</th>
-                        <th class="px-6 py-3 bg-blue-50 text-blue-900 font-semibold text-left">FR</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <%
-                        List<Patient> patientsDuJour = (List<Patient>) request.getAttribute("patientsDuJour");
-                        SigneVitalDAO signeVitalDAO = new SigneVitalDAO();
-                        if (patientsDuJour != null && !patientsDuJour.isEmpty()) {
-                            for (Patient p : patientsDuJour) {
-                                List<SigneVital> svList = signeVitalDAO.findByPatientId(p.getId());
-                                SigneVital dernierSV = (svList != null && !svList.isEmpty()) ? svList.get(svList.size() - 1) : null;
-                    %>
-                    <tr class="border-b hover:bg-blue-50">
-                        <td class="px-6 py-4"><%= p.getNom() %></td>
-                        <td class="px-6 py-4"><%= p.getPrenom() %></td>
-                        <td class="px-6 py-4"><%= p.getDateArrivee() %></td>
-                        <td class="px-6 py-4"><%= (dernierSV != null) ? dernierSV.getTemperature() : "-" %></td>
-                        <td class="px-6 py-4"><%= (dernierSV != null) ? dernierSV.getFrequenceCardiaque() : "-" %></td>
-                        <td class="px-6 py-4"><%= (dernierSV != null) ? dernierSV.getTension() : "-" %></td>
-                        <td class="px-6 py-4"><%= (dernierSV != null) ? dernierSV.getFrequenceRespiratoire() : "-" %></td>
-                    </tr>
-                    <%
-                        }
-                    } else {
-                    %>
-                    <tr>
-                        <td colspan="7" class="text-center py-8 text-gray-400">
-                            Aucun patient enregistré aujourd'hui.
-                        </td>
-                    </tr>
-                    <%
-                        }
-                    %>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+
 
         <section id="formulaire" class="w-full flex flex-col items-center py-10 hidden">
             <h3 class="text-xl font-bold text-blue-700 mb-6">Enregistrer un patient</h3>
@@ -160,6 +107,52 @@
                     <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-8 rounded w-full md:w-auto">Enregistrer</button>
                 </div>
             </form>
+        </section>
+
+        <section id="liste" class="w-full flex flex-col items-center py-10">
+            <h3 class="text-xl font-bold text-blue-700 mb-6">Patients du jour</h3>
+            <div class="w-full max-w-5xl overflow-x-auto rounded-xl shadow">
+                <table class="min-w-full bg-white rounded-xl">
+                    <thead>
+                    <tr>
+                        <th class="px-6 py-3 bg-blue-50 text-blue-900 font-semibold text-left">Nom</th>
+                        <th class="px-6 py-3 bg-blue-50 text-blue-900 font-semibold text-left">Prénom</th>
+                        <th class="px-6 py-3 bg-blue-50 text-blue-900 font-semibold text-left">Date d'arrivée</th>
+                        <th class="px-6 py-3 bg-blue-50 text-blue-900 font-semibold text-left">Adresse</th>
+                        <th class="px-6 py-3 bg-blue-50 text-blue-900 font-semibold text-left">Mutuelle</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <%
+                        List<Patient> patientsDuJour = (List<Patient>) request.getAttribute("patientsDuJour");
+                        SigneVitalDAO signeVitalDAO = new SigneVitalDAO();
+                        if (patientsDuJour != null && !patientsDuJour.isEmpty()) {
+                            for (Patient p : patientsDuJour) {
+                    %>
+                    <tr class="border-b hover:bg-blue-50">
+                        <td class="px-6 py-4"><%= p.getNom() %></td>
+                        <td class="px-6 py-4"><%= p.getPrenom() %></td>
+                        <td class="px-6 py-4"><%= p.getDateArrivee() %></td>
+                        <td class="px-6 py-4"><%= p.getAdresse() %></td>
+                        <td class="px-6 py-4"><%= p.getMutuelle() %></td>
+
+                    </tr>
+                    <%
+                        }
+                    } else {
+                    %>
+                    <tr>
+                        <td colspan="7" class="text-center py-8 text-gray-400">
+                            Aucun patient enregistré aujourd'hui.
+                        </td>
+                    </tr>
+                    <%
+                        }
+                    %>
+                    </tbody>
+                </table>
+            </div>
         </section>
 
     </main>

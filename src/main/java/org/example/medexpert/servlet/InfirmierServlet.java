@@ -27,9 +27,6 @@ public class InfirmierServlet extends HttpServlet {
         String nom = req.getParameter("nom");
         String prenom = req.getParameter("prenom");
         String numSecuriteSociale = req.getParameter("numSecuriteSociale");
-//        LocalDateTime dateArrivee = LocalDateTime.parse(req.getParameter("dateArrivee"));
-//        String adresse = req.getParameter("adresse");
-//        Boolean mutuelle = Boolean.valueOf(req.getParameter("mutuelle"));
 
 
         Patient patient = infirmierService.patientExiste(nom, prenom, numSecuriteSociale);

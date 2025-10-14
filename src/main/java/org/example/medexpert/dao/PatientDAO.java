@@ -6,6 +6,7 @@ import org.example.medexpert.model.Patient;
 import org.example.medexpert.model.SigneVital;
 import org.example.medexpert.util.JpaUtil;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class PatientDAO {
@@ -67,15 +68,17 @@ public class PatientDAO {
     }
 
     public List<Patient> findPatientsDuJour() {
+        LocalDate aujourdHui = LocalDate.now();
         try {
             TypedQuery<Patient> query = em.createQuery(
-                "SELECT DISTINCT c.dossier.patient FROM Consultation c WHERE DATE(c.dateConsultation) = CURRENT_DATE",
-                Patient.class
+                    "SELECT p FROM Patient p WHERE DATE(p.dateArrivee) = :today",
+                    Patient.class
             );
+            query.setParameter("today", aujourdHui);
             return query.getResultList();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return List.of();
         }
     }
 
