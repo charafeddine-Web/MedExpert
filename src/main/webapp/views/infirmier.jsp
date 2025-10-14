@@ -16,6 +16,13 @@
             formSection.classList.toggle("hidden");
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
+        setTimeout(() => {
+            const info = document.getElementById('messageInfo');
+            if(info) info.style.display = 'none';
+
+            const success = document.getElementById('messageSuccess');
+            if(success) success.style.display = 'none';
+        }, 3000);
     </script>
 </head>
 <body class="bg-gray-100 min-h-screen w-full">
@@ -46,16 +53,17 @@
                 String successMessage = (String) request.getAttribute("successMessage");
                 if (infoMessage != null) {
             %>
-            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
+            <div id="messageInfo" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
                 <%= infoMessage %>
             </div>
             <% } %>
             <% if (successMessage != null) { %>
-            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4">
+            <div id="messageSuccess" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4">
                 <%= successMessage %>
             </div>
             <% } %>
         </div>
+
 
 
 

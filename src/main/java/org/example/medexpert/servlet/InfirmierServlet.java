@@ -46,6 +46,8 @@ public class InfirmierServlet extends HttpServlet {
             signeVital.setPatient(patient);
 
             signeVitalService.ajouterSigneVital(patient,signeVital);
+            req.setAttribute("successMessage", "Nouveaux signes vitaux ajoutés avec succès pour " + patient.getNom() + " " + patient.getPrenom() + ".");
+            req.removeAttribute("patientExistant");
 
         } else {
             String adresse = req.getParameter("adresse");
