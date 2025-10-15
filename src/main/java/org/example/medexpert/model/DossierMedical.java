@@ -24,11 +24,10 @@ public class DossierMedical {
     @OneToMany(mappedBy = "dossier", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Consultation> consultations = new ArrayList<>();
 
-    public DossierMedical(long id, LocalDateTime dateCreation, Patient patient, List<Consultation> consultations) {
+    public DossierMedical(long id, LocalDateTime dateCreation, Patient patient) {
         this.id = id;
         this.dateCreation = dateCreation;
         this.patient = patient;
-        this.consultations = consultations;
     }
 
     public DossierMedical() {
@@ -58,13 +57,7 @@ public class DossierMedical {
         this.patient = patient;
     }
 
-    public List<Consultation> getConsultations() {
-        return consultations;
-    }
 
-    public void setConsultations(List<Consultation> consultations) {
-        this.consultations = consultations;
-    }
 
     @Override
     public String toString() {

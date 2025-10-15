@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.medexpert.model.Patient;
 import org.example.medexpert.model.SigneVital;
 import org.example.medexpert.service.InfirmierService;
+import org.example.medexpert.service.PatientService;
 import org.example.medexpert.service.SigneVitalService;
 
 import java.io.IOException;
@@ -18,18 +19,19 @@ import java.util.List;
 
 @WebServlet("/infirmier")
 public class InfirmierServlet extends HttpServlet {
-    private final InfirmierService infirmierService = new InfirmierService();
+    private final PatientService patientService = new PatientService();
     private final SigneVitalService signeVitalService = new SigneVitalService();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+
 
         String nom = req.getParameter("nom");
         String prenom = req.getParameter("prenom");
         String numSecuriteSociale = req.getParameter("numSecuriteSociale");
 
 
-        Patient patient = infirmierService.patientExiste(nom, prenom, numSecuriteSociale);
+        Patient patient = patientService.patientExiste(nom, prenom, numSecuriteSociale);
 
         if (patient != null) {
             req.setAttribute("patientExistant", patient);
@@ -58,9 +60,18 @@ public class InfirmierServlet extends HttpServlet {
             String allergies = req.getParameter("allergies");
             String traitementsEnCours = req.getParameter("traitementsEnCours");
 
-            Patient nouveauPatient = infirmierService.enregistrerPatient(
-                    nom, prenom, dateArrivee, adresse, mutuelle, numSecuriteSociale, antecedents, allergies, traitementsEnCours
-            );
+            Patient nouveauPatient = new Patient();
+            nouveauPatient.setNom(nom);
+            nouveauPatient.setPrenom(prenom);
+            nouveauPatient.setDateArrivee(dateArrivee);
+            nouveauPatient.setAdresse(adresse);
+            nouveauPatient.setMutuelle(mutuelle);
+            nouveauPatient.setNumSecuriteSociale(numSecuriteSociale);
+            nouveauPatient.setAntecedents(antecedents);
+            nouveauPatient.setAllergies(allergies);
+            nouveauPatient.setTraitementsEnCours(traitementsEnCours);
+
+            patientService.creerPatient(nouveauPatient);
 
             SigneVital signeVital = new SigneVital();
             signeVital.setTension(Double.valueOf(req.getParameter("tension")));
@@ -76,7 +87,7 @@ public class InfirmierServlet extends HttpServlet {
 
             req.setAttribute("successMessage", "Patient et signe vital enregistrés avec succès.");
         }
-        List<Patient> patientsDuJour = infirmierService.getPatientsDuJour();
+        List<Patient> patientsDuJour = patientService.getPatientsDuJour();
         req.setAttribute("patientsDuJour", patientsDuJour);
 
         req.getRequestDispatcher("/views/infirmier.jsp").forward(req, res);
