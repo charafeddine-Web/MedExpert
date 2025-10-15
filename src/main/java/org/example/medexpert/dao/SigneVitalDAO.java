@@ -68,6 +68,7 @@ public class SigneVitalDAO {
         }
     }
 
+    //pour récupérer les signes vitaux d'un patient donné
     public List<SigneVital> findByPatientId(Long patientId) {
         List<SigneVital> signesVitaux = null;
         try {
