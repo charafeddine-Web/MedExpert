@@ -465,7 +465,7 @@
 
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Date de consultation</label>
-                            <input type="date" name="dateConsultation" required
+                            <input type="datetime-local" name="dateConsultation" required
                                    class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none" />
                         </div>
 
@@ -551,7 +551,7 @@
                                     if (consultations != null) {
                                         for (Consultation c : consultations) {
                                 %>
-
+                                <option value="<%= c.getId() %>">Consultation #<%= c.getId() %> - <%= c.getDateConsultation() %></option>
                                 <%
                                         }
                                     }
@@ -575,31 +575,11 @@
                             </select>
                         </div>
 
-                        <div class="lg:col-span-2">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Description de l'acte</label>
-                            <textarea name="descriptionActe" rows="4" required
-                                      class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none"
-                                      placeholder="Détails de l'acte technique réalisé"></textarea>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Date de réalisation</label>
-                            <input type="date" name="dateActe" required
-                                   class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none" />
-                        </div>
-
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Coût (€)</label>
                             <input type="number" step="0.01" name="coutActe" required
                                    class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none"
                                    placeholder="0.00" />
-                        </div>
-
-                        <div class="lg:col-span-2">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Résultats / Observations</label>
-                            <textarea name="resultatsActe" rows="3"
-                                      class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none"
-                                      placeholder="Résultats obtenus ou observations (optionnel)"></textarea>
                         </div>
                     </div>
 
@@ -642,7 +622,7 @@
                             <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Patient</th>
                             <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Date</th>
                             <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Diagnostic</th>
-                            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Décision</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Status</th>
                             <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Actions</th>
                         </tr>
                         </thead>
@@ -662,6 +642,7 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4">
+                                <%= cons.getStatut() %>
                             </td>
                             <td class="px-6 py-4">
                                 <button onclick="openActesForm('<%= cons.getId() %>')"

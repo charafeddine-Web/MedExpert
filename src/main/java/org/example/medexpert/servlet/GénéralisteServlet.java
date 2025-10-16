@@ -10,21 +10,16 @@ import org.example.medexpert.dao.PatientDAO;
 import org.example.medexpert.dao.ConsultationDAO;
 import org.example.medexpert.dao.ActeMedicalDAO;
 import org.example.medexpert.dao.DossierMedicalDAO;
-import org.example.medexpert.dao.GénéralisteDAO;
 import org.example.medexpert.model.DossierMedical;
 import org.example.medexpert.model.Patient;
 import org.example.medexpert.model.Consultation;
 import org.example.medexpert.model.ActeMedical;
 import org.example.medexpert.model.Généraliste;
-import org.example.medexpert.model.Utilisateur;
-import org.example.medexpert.model.enums.TypeUtilisateur;
 import org.example.medexpert.model.enums.StatutConsultation;
 import org.example.medexpert.model.enums.TypeActe;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @WebServlet(name = "GénéralisteServlet", urlPatterns = {"/generaliste", "/generaliste/consultation", "/generaliste/actes"})
@@ -41,30 +36,6 @@ public class GénéralisteServlet extends HttpServlet {
         String action = request.getParameter("action");
         
         loadDashboardData(request);
-
-        // Ensure session holds a Généraliste entity if the user is a generalist
-        HttpSession sessionAuth = request.getSession(false);
-        if (sessionAuth != null) {
-            Object sessionUserObj = sessionAuth.getAttribute("user");
-            if (sessionUserObj instanceof Utilisateur && !(sessionUserObj instanceof Généraliste)) {
-                Utilisateur u = (Utilisateur) sessionUserObj;
-                if (u.getRole() == TypeUtilisateur.MEDECIN_GENERALISTE) {
-                    GénéralisteDAO generalisteDAO = new GénéralisteDAO();
-                    Généraliste g = generalisteDAO.findByEmail(u.getEmail());
-                    if (g == null && u.getId() != null) {
-                        g = generalisteDAO.findById(u.getId());
-                    }
-                    if (g == null) {
-                        // single-generalist fallback
-                        java.util.List<Généraliste> all = generalisteDAO.findAll();
-                        if (!all.isEmpty()) g = all.get(0);
-                    }
-                    if (g != null) sessionAuth.setAttribute("user", g);
-                }
-            }
-        }
-
-
 
         HttpSession sessionForMessages = request.getSession(false);
         if (sessionForMessages != null) {
@@ -112,8 +83,7 @@ public class GénéralisteServlet extends HttpServlet {
             String prescription = request.getParameter("prescription");
             String symptomes = request.getParameter("symptomes");
             String observations = request.getParameter("observations");
-            String dateConsultation = request.getParameter("dateConsultation");
-            String heureConsultation = request.getParameter("heureConsultation");
+            LocalDateTime dateConsultation = LocalDateTime.parse(request.getParameter("dateConsultation"));
             String coutParam = request.getParameter("cout");
             String statutParam = request.getParameter("statut");
 
@@ -122,37 +92,6 @@ public class GénéralisteServlet extends HttpServlet {
             HttpSession session = request.getSession(false);
 
            Généraliste generaliste = (Généraliste) session.getAttribute("user");
-//            Object sessionUser = session.getAttribute("user");
-//
-//            Généraliste generaliste = null;
-//            if (sessionUser instanceof Généraliste) {
-//                generaliste = (Généraliste) sessionUser;
-//            } else if (sessionUser instanceof Utilisateur) {
-//                Utilisateur u = (Utilisateur) sessionUser;
-//                if (u.getRole() == TypeUtilisateur.MEDECIN_GENERALISTE) {
-//                    GénéralisteDAO generalisteDAO = new GénéralisteDAO();
-//                    generaliste = generalisteDAO.findByEmail(u.getEmail());
-//                    if (generaliste == null && u.getId() != null) {
-//                        generaliste = generalisteDAO.findById(u.getId());
-//                    }
-//                    if (generaliste != null) {
-//                        session.setAttribute("user", generaliste);
-//                    }
-//                }
-//            }
-//            if (generaliste == null) {
-//                // final fallback: pick first generalist from DB if the app only has one
-//                GénéralisteDAO generalisteDAO = new GénéralisteDAO();
-//                java.util.List<Généraliste> all = generalisteDAO.findAll();
-//                if (!all.isEmpty()) {
-//                    generaliste = all.get(0);
-//                    session.setAttribute("user", generaliste);
-//                } else {
-//                    session.setAttribute("errorMessage", "Impossible de déterminer le médecin généraliste courant.");
-//                    response.sendRedirect(request.getContextPath() + "/views/login.jsp");
-//                    return;
-//                }
-//            }
 
             DossierMedical dossier = patient.getDossier();
             if (dossier == null) {
@@ -164,15 +103,12 @@ public class GénéralisteServlet extends HttpServlet {
                 patient.setDossier(dossier);
             }
 
-            LocalDate date = LocalDate.parse(dateConsultation);
-            LocalTime time = LocalTime.parse(heureConsultation);
-            LocalDateTime dateTime = LocalDateTime.of(date, time);
 
             Consultation consultation = new Consultation();
 
             consultation.setDossier(dossier);
             consultation.setGeneraliste(generaliste);
-            consultation.setDateConsultation(dateTime);
+            consultation.setDateConsultation(dateConsultation);
             consultation.setDiagnostic(diagnostic);
             consultation.setPrescription(prescription);
             consultation.setSymptomes(symptomes);
@@ -203,6 +139,10 @@ public class GénéralisteServlet extends HttpServlet {
             acte.setConsultation(consultation);
 
             acteDAO.create(acte);
+
+            Double currentCost = consultation.getCout() != null ? consultation.getCout() : 0.0;
+            consultation.setCout(currentCost + cout);
+            consultationDAO.update(consultation);
             HttpSession sessionActe = request.getSession();
             sessionActe.setAttribute("successMessage", "Acte médical enregistré avec succès.");
             response.sendRedirect(request.getContextPath() + "/generaliste");
@@ -228,4 +168,5 @@ public class GénéralisteServlet extends HttpServlet {
             request.setAttribute("errorMessage", "Erreur lors du chargement des données: " + e.getMessage());
         }
     }
+
 }
