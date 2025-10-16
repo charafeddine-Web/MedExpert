@@ -607,6 +607,7 @@
         </section>
 
         <!-- Formulaire Demande d'Expertise -->
+
         <section id="expertise-form" class="w-full max-w-7xl mx-auto py-6 hidden fade-in">
             <div class="glass-effect rounded-2xl shadow-2xl p-8 lg:p-12 card-hover">
                 <div class="flex items-center space-x-3 mb-8">
