@@ -7,9 +7,9 @@ import org.example.medexpert.util.JpaUtil;
 import java.util.List;
 
 public class DemandeExpertiseDAO {
-    EntityManager em = JpaUtil.getEntityManager();
 
     public void create(DemandeExpertise demande) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             em.persist(demande);
@@ -23,6 +23,7 @@ public class DemandeExpertiseDAO {
     }
 
     public DemandeExpertise findById(Long id) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             return em.find(DemandeExpertise.class, id);
         } finally {
@@ -31,6 +32,7 @@ public class DemandeExpertiseDAO {
     }
 
     public List<DemandeExpertise> findAll() {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             TypedQuery<DemandeExpertise> query = em.createQuery("SELECT d FROM DemandeExpertise d", DemandeExpertise.class);
             return query.getResultList();
@@ -40,6 +42,7 @@ public class DemandeExpertiseDAO {
     }
 
     public void update(DemandeExpertise demande) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             em.merge(demande);
@@ -53,6 +56,7 @@ public class DemandeExpertiseDAO {
     }
 
     public void delete(Long id) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             DemandeExpertise demande = em.find(DemandeExpertise.class, id);

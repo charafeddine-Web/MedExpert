@@ -3433,7 +3433,7 @@
 											"top": 580,
 											"width": 184.42822265625,
 											"height": 13,
-											"text": "-priorite: String",
+											"text": "-priorite: Enum",
 											"horizontalAlignment": 0
 										},
 										{
@@ -8400,7 +8400,7 @@
 							},
 							"name": "priorite",
 							"visibility": "private",
-							"type": "String"
+							"type": "Enum"
 						},
 						{
 							"_type": "UMLAttribute",

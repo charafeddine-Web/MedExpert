@@ -39,6 +39,10 @@ public class DemandeExpertise {
     @JoinColumn(name = "consultation_id", unique = true)
     private Consultation consultation;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creneau_id")
+    private Creneau creneau;
+
 
     public DemandeExpertise() {}
 
@@ -69,8 +73,24 @@ public class DemandeExpertise {
         return priorite;
     }
 
+    public Consultation getConsultation() {
+        return consultation;
+    }
+
+    public void setConsultation(Consultation consultation) {
+        this.consultation = consultation;
+    }
+
     public void setPriorite(String priorite) {
         this.priorite = priorite;
+    }
+
+    public Creneau getCreneau() {
+        return creneau;
+    }
+
+    public void setCreneau(Creneau creneau) {
+        this.creneau = creneau;
     }
 
     public LocalDateTime getDateDemande() {

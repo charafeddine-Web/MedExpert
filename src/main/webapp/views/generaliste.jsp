@@ -133,7 +133,7 @@
     <script>
 
         function toggleSection(sectionId) {
-            const sections = ['patients-attente', 'consultation-form', 'actes-form'];
+            const sections = ['patients-attente', 'consultation-form', 'actes-form', 'expertise-form'];
             sections.forEach(id => {
                 const section = document.getElementById(id);
                 if (section) {
@@ -154,6 +154,12 @@
         function openActesForm(consultationId) {
             document.getElementById('consultationId').value = consultationId;
             toggleSection('actes-form');
+        }
+
+        function openExpertiseForm(consultationId) {
+            const input = document.getElementById('expertiseConsultationId');
+            if (input) input.value = consultationId;
+            toggleSection('expertise-form');
         }
 
         setTimeout(() => {
@@ -600,9 +606,93 @@
             </div>
         </section>
 
+        <!-- Formulaire Demande d'Expertise -->
+        <section id="expertise-form" class="w-full max-w-7xl mx-auto py-6 hidden fade-in">
+            <div class="glass-effect rounded-2xl shadow-2xl p-8 lg:p-12 card-hover">
+                <div class="flex items-center space-x-3 mb-8">
+                    <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Demande d'expertise</h3>
+                        <p class="text-sm text-gray-500 mt-1">Créer une demande pour une consultation en attente d'avis</p>
+                    </div>
+                </div>
+
+                <form action="<%=request.getContextPath()%>/generaliste/expertise" method="post" class="space-y-6">
+                    <input type="hidden" id="expertiseConsultationId" name="consultationId" />
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="lg:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Spécialiste</label>
+                            <select name="specialisteId" required
+                                    class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none">
+                                <option value="">-- Sélectionner un spécialiste --</option>
+                                <%
+                                    java.util.List<org.example.medexpert.model.Specialiste> specialistes = (java.util.List<org.example.medexpert.model.Specialiste>) request.getAttribute("specialistes");
+                                    if (specialistes != null) {
+                                        for (org.example.medexpert.model.Specialiste s : specialistes) {
+                                %>
+                                <option value="<%= s.getId() %>"><%= s.getPrenom() %> <%= s.getNom() %></option>
+                                <%
+                                        }
+                                    }
+                                %>
+                            </select>
+                        </div>
+
+                        <div class="lg:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Créneau souhaité</label>
+                            <select name="creneauId"
+                                    class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none">
+                                <option value="">-- Sélectionner un créneau (optionnel) --</option>
+                                <%
+                                    java.util.List<org.example.medexpert.model.Creneau> creneaux = (java.util.List<org.example.medexpert.model.Creneau>) request.getAttribute("creneaux");
+                                    if (creneaux != null) {
+                                        for (org.example.medexpert.model.Creneau c : creneaux) {
+                                %>
+                                <option value="<%= c.getId() %>"><%= c.getDateDebut() %> - <%= c.getDateFin() %></option>
+                                <%
+                                        }
+                                    }
+                                %>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Priorité</label>
+                            <select name="priorite" required
+                                    class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none">
+                                <option value="NORMALE">Normale</option>
+                                <option value="URGENTE">Urgente</option>
+                                <option value="HAUTE">Haute</option>
+                            </select>
+                        </div>
+
+                        <div class="lg:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Question</label>
+                            <textarea name="question" rows="4" required
+                                      class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none"
+                                      placeholder="Décrivez la question médicale pour le spécialiste..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 mt-8">
+                        <button type="button" onclick="toggleSection('expertise-form')"
+                                class="px-8 py-4 rounded-xl border-2 border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition">Annuler</button>
+                        <button type="submit"
+                                class="gradient-bg hover:opacity-90 text-white font-bold py-4 px-10 rounded-xl shadow-lg transition transform hover:scale-105">Envoyer</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
         <!-- Liste des consultations récentes -->
         <section class="w-full max-w-7xl mx-auto py-6 fade-in">
             <div class="glass-effect rounded-2xl shadow-2xl p-8 card-hover">
+
                 <div class="flex items-center space-x-3 mb-8">
                     <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -644,14 +734,19 @@
                             <td class="px-6 py-4">
                                 <%= cons.getStatut() %>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 space-x-3">
                                 <button onclick="openActesForm('<%= cons.getId() %>')"
-                                        class="text-purple-600 hover:text-purple-800 font-medium flex items-center space-x-1 transition">
+                                        class="text-purple-600 hover:text-purple-800 font-medium inline-flex items-center space-x-1 transition">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                                     </svg>
                                     <span>Ajouter acte</span>
                                 </button>
+                                <% if (cons.getStatut() == org.example.medexpert.model.enums.StatutConsultation.EN_ATTENTE_AVIS_SPECIALISTE) { %>
+                                <button onclick="openExpertiseForm('<%= cons.getId() %>')" class="text-indigo-600 hover:text-indigo-800 font-medium inline-flex items-center">
+                                    Demander expertise
+                                </button>
+                                <% } %>
                             </td>
                         </tr>
                         <%
