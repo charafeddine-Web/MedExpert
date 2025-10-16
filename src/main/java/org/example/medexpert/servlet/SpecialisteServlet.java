@@ -16,4 +16,13 @@ public class SpecialisteServlet extends HttpServlet {
         req.getRequestDispatcher("/views/specialiste.jsp").forward(req,res);
     }
 
+
+
+//    @Override
+//    protected void doPodt(HttpServletRequest  req,HttpServletResponse res) throws  ServletException, IOException{
+//
+//    }
+
+
+
 }
