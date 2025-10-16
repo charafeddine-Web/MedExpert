@@ -8,9 +8,8 @@ import java.util.List;
 
 public class GénéralisteDAO {
 
-    EntityManager em = JpaUtil.getEntityManager();
-
     public void create(Généraliste generaliste) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             em.persist(generaliste);
@@ -24,6 +23,7 @@ public class GénéralisteDAO {
     }
 
     public Généraliste findById(Long id) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             return em.find(Généraliste.class, id);
         } finally {
@@ -32,6 +32,7 @@ public class GénéralisteDAO {
     }
 
     public List<Généraliste> findAll() {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             TypedQuery<Généraliste> query = em.createQuery("SELECT g FROM Généraliste g", Généraliste.class);
             return query.getResultList();
@@ -40,7 +41,21 @@ public class GénéralisteDAO {
         }
     }
 
+    public Généraliste findByEmail(String email) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            TypedQuery<Généraliste> query = em.createQuery(
+                    "SELECT g FROM Généraliste g WHERE g.email = :email", Généraliste.class);
+            query.setParameter("email", email);
+            List<Généraliste> list = query.getResultList();
+            return list.isEmpty() ? null : list.get(0);
+        } finally {
+            em.close();
+        }
+    }
+
     public void update(Généraliste generaliste) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             em.merge(generaliste);
@@ -54,6 +69,7 @@ public class GénéralisteDAO {
     }
 
     public void delete(Long id) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             Généraliste generaliste = em.find(Généraliste.class, id);

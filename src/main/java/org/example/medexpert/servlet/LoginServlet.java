@@ -6,7 +6,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.example.medexpert.dao.GénéralisteDAO;
+import org.example.medexpert.model.Généraliste;
 import org.example.medexpert.model.Utilisateur;
+import org.example.medexpert.model.enums.TypeUtilisateur;
 import org.example.medexpert.service.UtilisateurService;
 
 import java.io.IOException;
@@ -22,13 +25,27 @@ public class LoginServlet extends HttpServlet {
         String motDePasse = request.getParameter("password");
 
         Utilisateur u = utilisateurService.login(email, motDePasse);
+           HttpSession session = request.getSession();
+
+
         if (u != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("user", u);
+            session.setAttribute("user",  u);
+
+//            HttpSession session = request.getSession();
+//            GénéralisteDAO generalisteDAO = new GénéralisteDAO();
+//            Généraliste g = null;
+//            if (u.getRole() == TypeUtilisateur.MEDECIN_GENERALISTE) {
+//                g = generalisteDAO.findByEmail(u.getEmail());
+//                if (g == null && u.getId() != null) {
+//                    g = generalisteDAO.findById(u.getId());
+//                }
+//            }
+//            session.setAttribute("user", g != null ? g : u);
+
             String redirectUrl = "views/patient.jsp";
             switch (u.getRole()) {
                 case MEDECIN_GENERALISTE:
-                    redirectUrl = "views/generaliste.jsp";
+                    redirectUrl = request.getContextPath() + "/generaliste";
                     break;
                 case INFIRMIER:
                     redirectUrl = "views/infirmier.jsp";

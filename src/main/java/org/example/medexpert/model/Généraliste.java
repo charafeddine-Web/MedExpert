@@ -9,7 +9,6 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("GENERALISTE")
 @Table(name = "generalistes" )
-
 public class Généraliste extends Utilisateur {
 
     @OneToMany(mappedBy = "generaliste", cascade = CascadeType.ALL)
@@ -17,7 +16,7 @@ public class Généraliste extends Utilisateur {
 
     public Généraliste() {}
 
-    public Généraliste(Long id, String nom, String prenom, String email, String motDePasse, TypeUtilisateur role, List<Consultation> consultationList) {
+    public Généraliste(String nom, String prenom, String email, String motDePasse, TypeUtilisateur role, List<Consultation> consultationList) {
         super( nom, prenom, email, motDePasse, role);
         this.consultationList = consultationList;
     }

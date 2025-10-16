@@ -2,6 +2,7 @@ package org.example.medexpert.service;
 
 import jakarta.servlet.http.HttpSession;
 import org.example.medexpert.dao.UtilisateurDAO;
+import org.example.medexpert.model.Généraliste;
 import org.example.medexpert.model.Utilisateur;
 import org.example.medexpert.model.Specialiste;
 import org.example.medexpert.model.Infirmier;
@@ -9,6 +10,7 @@ import org.example.medexpert.model.Infirmier;
 import org.example.medexpert.model.enums.TypeUtilisateur;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UtilisateurService {
@@ -23,6 +25,9 @@ public class UtilisateurService {
         switch (role) {
             case MEDECIN_SPECIALISTE:
                 u = new Specialiste(nom, prenom, email, hashed, role, null, specialite, null, null);
+                break;
+            case MEDECIN_GENERALISTE:
+                u = new Généraliste(nom, prenom, email, hashed, role, new ArrayList<>());
                 break;
             case INFIRMIER:
                 u = new Infirmier(nom, prenom, email, hashed, role, service);

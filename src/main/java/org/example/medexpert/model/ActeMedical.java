@@ -50,6 +50,14 @@ public class ActeMedical {
         this.cout = cout;
     }
 
+    public Consultation getConsultation() {
+        return consultation;
+    }
+
+    public void setConsultation(Consultation consultation) {
+        this.consultation = consultation;
+    }
+
     @Override
     public String toString() {
         return "ActeMedical{" +

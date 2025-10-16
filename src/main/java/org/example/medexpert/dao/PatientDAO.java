@@ -3,16 +3,15 @@ package org.example.medexpert.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.example.medexpert.model.Patient;
-import org.example.medexpert.model.SigneVital;
 import org.example.medexpert.util.JpaUtil;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class PatientDAO {
-    EntityManager em = JpaUtil.getEntityManager();
 
     public void create(Patient patient) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             em.persist(patient);
@@ -24,6 +23,7 @@ public class PatientDAO {
     }
 
     public Patient findById(Long id) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             return em.find(Patient.class, id);
         }catch (Exception e){
@@ -33,6 +33,7 @@ public class PatientDAO {
     }
 
     public List<Patient> findAll() {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             TypedQuery<Patient> query = em.createQuery("SELECT p FROM Patient p", Patient.class);
             return query.getResultList();
@@ -43,6 +44,7 @@ public class PatientDAO {
     }
 
     public void update(Patient patient) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             em.merge(patient);
@@ -54,6 +56,7 @@ public class PatientDAO {
     }
 
     public void delete(Long id) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             Patient patient = em.find(Patient.class, id);
@@ -68,6 +71,7 @@ public class PatientDAO {
     }
 
     public List<Patient> findPatientsDuJour() {
+        EntityManager em = JpaUtil.getEntityManager();
         LocalDate aujourdHui = LocalDate.now();
         try {
             TypedQuery<Patient> query = em.createQuery(
@@ -83,6 +87,7 @@ public class PatientDAO {
     }
 
     public Patient findByNomPrenomOuNumero(String nom, String prenom, String numSecuriteSociale) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             TypedQuery<Patient> query = em.createQuery(
                     "SELECT p FROM Patient p WHERE p.nom = :nom OR p.prenom = :prenom OR p.numSecuriteSociale = :num",
@@ -99,6 +104,17 @@ public class PatientDAO {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public List<Patient> getPatientsEnAttente() {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            String jpql = "SELECT p FROM Patient p ORDER BY p.dateArrivee ASC";
+            TypedQuery<Patient> query = em.createQuery(jpql, Patient.class);
+            return query.getResultList();
+        } finally {
+            em.close();
         }
     }
 

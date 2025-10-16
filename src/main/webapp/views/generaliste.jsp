@@ -450,10 +450,17 @@
                         </div>
 
                         <div class="lg:col-span-2">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Traitement prescrit</label>
-                            <textarea name="traitement" rows="4" required
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Prescription</label>
+                            <textarea name="prescription" rows="4" required
                                       class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none"
                                       placeholder="Détails du traitement et médicaments prescrits"></textarea>
+                        </div>
+
+                        <div class="lg:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Symptômes</label>
+                            <textarea name="symptomes" rows="3"
+                                      class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none"
+                                      placeholder="Symptômes déclarés par le patient (optionnel)"></textarea>
                         </div>
 
                         <div>
@@ -462,11 +469,6 @@
                                    class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none" />
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Heure de consultation</label>
-                            <input type="time" name="heureConsultation" required
-                                   class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none" />
-                        </div>
 
                         <div class="lg:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Observations</label>
@@ -475,15 +477,20 @@
                                       placeholder="Observations complémentaires (optionnel)"></textarea>
                         </div>
 
-                        <div class="lg:col-span-2">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Décision</label>
-                            <select name="decision" required
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Coût (€)</label>
+                            <input type="number" step="0.01" name="cout" required
+                                   class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none"
+                                   placeholder="0.00" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Statut</label>
+                            <select name="statut" required
                                     class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none">
-                                <option value="">-- Sélectionner une décision --</option>
-                                <option value="PRISE_EN_CHARGE">Prise en charge par le généraliste</option>
-                                <option value="ORIENTATION_SPECIALISTE">Orientation vers un spécialiste</option>
-                                <option value="EXAMEN_COMPLEMENTAIRE">Examen complémentaire requis</option>
-                                <option value="SUIVI">Suivi régulier</option>
+                                <option value="">-- Sélectionner un statut --</option>
+                                <option value="TERMINEE">Terminée</option>
+                                <option value="EN_ATTENTE_AVIS_SPECIALISTE">En attente d'avis spécialiste</option>
                             </select>
                         </div>
                     </div>

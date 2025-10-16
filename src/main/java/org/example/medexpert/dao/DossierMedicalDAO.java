@@ -7,9 +7,9 @@ import org.example.medexpert.util.JpaUtil;
 import java.util.List;
 
 public class DossierMedicalDAO {
-    EntityManager em = JpaUtil.getEntityManager();
 
     public void create(DossierMedical dossier) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             em.persist(dossier);
@@ -23,6 +23,7 @@ public class DossierMedicalDAO {
     }
 
     public DossierMedical findById(Long id) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             return em.find(DossierMedical.class, id);
         } finally {
@@ -31,6 +32,7 @@ public class DossierMedicalDAO {
     }
 
     public List<DossierMedical> findAll() {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             TypedQuery<DossierMedical> query = em.createQuery("SELECT d FROM DossierMedical d", DossierMedical.class);
             return query.getResultList();
@@ -40,6 +42,7 @@ public class DossierMedicalDAO {
     }
 
     public void update(DossierMedical dossier) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             em.merge(dossier);
@@ -53,6 +56,7 @@ public class DossierMedicalDAO {
     }
 
     public void delete(Long id) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             DossierMedical dossier = em.find(DossierMedical.class, id);

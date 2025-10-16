@@ -4,12 +4,13 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.example.medexpert.model.Consultation;
 import org.example.medexpert.util.JpaUtil;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ConsultationDAO {
-    EntityManager em = JpaUtil.getEntityManager();
 
     public void create(Consultation consultation) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             em.persist(consultation);
@@ -23,6 +24,7 @@ public class ConsultationDAO {
     }
 
     public Consultation findById(Long id) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             return em.find(Consultation.class, id);
         } finally {
@@ -31,6 +33,7 @@ public class ConsultationDAO {
     }
 
     public List<Consultation> findAll() {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             TypedQuery<Consultation> query = em.createQuery("SELECT c FROM Consultation c", Consultation.class);
             return query.getResultList();
@@ -40,6 +43,7 @@ public class ConsultationDAO {
     }
 
     public void update(Consultation consultation) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             em.merge(consultation);
@@ -53,6 +57,7 @@ public class ConsultationDAO {
     }
 
     public void delete(Long id) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             Consultation consultation = em.find(Consultation.class, id);
@@ -63,6 +68,20 @@ public class ConsultationDAO {
         } catch (Exception e) {
             if (em.getTransaction().isActive()) em.getTransaction().rollback();
             throw e;
+        } finally {
+            em.close();
+        }
+    }
+    
+    public List<Consultation> getConsultationsAujourdhui() {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            LocalDate aujourdhui = LocalDate.now();
+            TypedQuery<Consultation> query = em.createQuery(
+                "SELECT c FROM Consultation c WHERE DATE(c.dateConsultation) = :aujourdhui", 
+                Consultation.class);
+            query.setParameter("aujourdhui", aujourdhui);
+            return query.getResultList();
         } finally {
             em.close();
         }
