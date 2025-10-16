@@ -31,18 +31,8 @@ public class LoginServlet extends HttpServlet {
         if (u != null) {
             session.setAttribute("user",  u);
 
-//            HttpSession session = request.getSession();
-//            GénéralisteDAO generalisteDAO = new GénéralisteDAO();
-//            Généraliste g = null;
-//            if (u.getRole() == TypeUtilisateur.MEDECIN_GENERALISTE) {
-//                g = generalisteDAO.findByEmail(u.getEmail());
-//                if (g == null && u.getId() != null) {
-//                    g = generalisteDAO.findById(u.getId());
-//                }
-//            }
-//            session.setAttribute("user", g != null ? g : u);
-
             String redirectUrl = "views/patient.jsp";
+
             switch (u.getRole()) {
                 case MEDECIN_GENERALISTE:
                     redirectUrl = request.getContextPath() + "/generaliste";
@@ -51,7 +41,7 @@ public class LoginServlet extends HttpServlet {
                     redirectUrl = "views/infirmier.jsp";
                     break;
                 case MEDECIN_SPECIALISTE:
-                    redirectUrl = "views/specialiste.jsp";
+                    redirectUrl = request.getContextPath() + "/specialiste";
                     break;
                 case PATIENT:
                     redirectUrl = "views/patient.jsp";
