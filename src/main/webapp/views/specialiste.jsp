@@ -202,10 +202,10 @@
     <%
     HttpSession sessionUser = request.getSession(false);
     Utilisateur user = (Utilisateur) (sessionUser != null ? sessionUser.getAttribute("user") : null);
-    if (user == null || !"SPECIALISTE".equals(user.getRole())) {
-        response.sendRedirect(request.getContextPath() + "/views/login.jsp");
-        return;
-    }
+//    if (user == null || !"MEDECIN_SPECIALISTE".equals(user.getRole())) {
+//        response.sendRedirect(request.getContextPath() + "/views/login.jsp");
+//        return;
+//    }
 
     Specialiste specialiste = (Specialiste) request.getAttribute("specialiste");
     List<DemandeExpertise> expertises = (List<DemandeExpertise>) request.getAttribute("expertises");
@@ -488,11 +488,6 @@
                                 <option value="UROLOGIE" <%= specialiste != null && "UROLOGIE".equals(specialiste.getSpecialite()) ? "selected" : "" %>>Urologie</option>
                             </select>
                         </div>
-
-
-
-
-
 
                     </div>
 
