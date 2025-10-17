@@ -5,16 +5,12 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.example.medexpert.model.Utilisateur;
+import org.example.medexpert.model.enums.TypeUtilisateur;
+
 import java.io.IOException;
-
-@WebFilter(urlPatterns = {
-        "/generaliste", "/generaliste/*",
-        "/specialiste", "/specialiste/*",
-        "/infirmier", "/infirmier/*"
-})
-
+@WebFilter(urlPatterns = "/*")
 public class AuthFilter implements Filter {
-
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -23,10 +19,8 @@ public class AuthFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession(false);
-
         String path = req.getRequestURI();
-        Object user = (session != null) ? session.getAttribute("user") : null;
-
+        Utilisateur user = (session != null) ? (Utilisateur) session.getAttribute("user") : null;
 
         boolean isPublicPath = path.contains("/login") ||
                 path.contains("/register") ||
@@ -38,17 +32,41 @@ public class AuthFilter implements Filter {
                 path.endsWith(".png") ||
                 path.endsWith(".jpg");
 
-
         res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         res.setHeader("Pragma", "no-cache");
         res.setDateHeader("Expires", 0);
 
         if (user == null && !isPublicPath) {
-            res.sendRedirect(req.getContextPath() + "/views/login.jsp");
-        } else {
-            chain.doFilter(request, response);
+            res.sendRedirect(req.getContextPath() + "/login");
+            return;
         }
+
+        if (user != null && (path.endsWith("login") || path.endsWith("login.jsp") ||
+                path.endsWith("register") || path.endsWith("register.jsp"))) {
+            switch (user.getRole()) {
+                case MEDECIN_SPECIALISTE -> res.sendRedirect(req.getContextPath() + "/specialiste");
+                case MEDECIN_GENERALISTE -> res.sendRedirect(req.getContextPath() + "/generaliste?action=list");
+                case INFIRMIER -> res.sendRedirect(req.getContextPath() + "/infirmier");
+                default -> res.sendRedirect(req.getContextPath() + "/");
+            }
+            return;
+        }
+
+        if (path.contains("/specialiste") && (user == null || !user.getRole().equals(TypeUtilisateur.MEDECIN_SPECIALISTE))) {
+            res.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+
+        if (path.contains("/generaliste") && (user == null || !user.getRole().equals(TypeUtilisateur.MEDECIN_GENERALISTE))) {
+            res.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+
+        if (path.contains("/infirmier") && (user == null || !user.getRole().equals(TypeUtilisateur.INFIRMIER))) {
+            res.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+
+        chain.doFilter(request, response);
     }
-
-
 }

@@ -16,6 +16,18 @@ public class Patient {
     @Column(nullable = false)
     private String nom;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<SigneVital> getSignesVitaux() {
+        return signesVitaux;
+    }
+
+    public void setSignesVitaux(List<SigneVital> signesVitaux) {
+        this.signesVitaux = signesVitaux;
+    }
+
     @Column(nullable = false)
     private String prenom;
 

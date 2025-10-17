@@ -70,7 +70,7 @@ public class LoginServlet extends HttpServlet {
                     redirectUrl = request.getContextPath() + "/generaliste";
                     break;
                 case INFIRMIER:
-                    redirectUrl = "views/infirmier.jsp";
+                    redirectUrl = request.getContextPath() + "/infirmier";
                     break;
                 case MEDECIN_SPECIALISTE:
                     redirectUrl = request.getContextPath() + "/specialiste";
