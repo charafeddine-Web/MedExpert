@@ -40,6 +40,19 @@ public class CreneauDAO {
         }
     }
 
+    public List<Creneau> findBySpecialisteId(Long specialisteId) {
+        try {
+            TypedQuery<Creneau> query = em.createQuery(
+                    "SELECT c FROM Creneau c WHERE c.specialiste.id = :sid ORDER BY c.dateDebut",
+                    Creneau.class
+            );
+            query.setParameter("sid", specialisteId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
     public void update(Creneau creneau) {
         try {
             em.getTransaction().begin();

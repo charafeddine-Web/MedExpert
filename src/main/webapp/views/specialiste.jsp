@@ -475,20 +475,28 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Les Creneau *</label>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
-                                    <label class="block text-xs font-medium text-gray-600 mb-1">Date début</label>
-                                    <input type="datetime-local" name="dateDebut"
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Date (Lundi uniquement)</label>
+                                    <input type="date" id="cal-date" name="dateOnly"
                                            class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-sky-500 focus:outline-none" />
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-medium text-gray-600 mb-1">Date fin</label>
-                                    <input type="datetime-local" name="dateFin"
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Début (hh:mm)</label>
+                                    <input type="time" id="cal-start" value="09:00"
                                            class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-sky-500 focus:outline-none" />
                                 </div>
-                                <div class="md:col-span-2">
-                                    <button formaction="<%=request.getContextPath()%>/specialiste/creneau" formmethod="post" type="submit"
-                                            class="px-5 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold hover:opacity-90">Ajouter le créneau</button>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Fin (hh:mm)</label>
+                                    <input type="time" id="cal-end" value="17:00"
+                                           class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-sky-500 focus:outline-none" />
+                                </div>
+                                <div class="md:col-span-3">
+                                    <button type="button" id="gen-slots"
+                                            class="px-5 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold hover:opacity-90">Générer les créneaux (30 min)</button>
+                                </div>
+                                <div class="md:col-span-3">
+                                    <div id="slots-container" class="grid grid-cols-2 md:grid-cols-3 gap-2"></div>
                                 </div>
                             </div>
                         </div>
@@ -768,6 +776,94 @@
             if (event.target.classList.contains('modal-overlay')) {
                 closeModal(event.target.id);
             }
+        });
+
+        // Calendar restrictions and slot generation (Mondays only, 30-min slots)
+        const dateInput = document.getElementById('cal-date');
+        const startInput = document.getElementById('cal-start');
+        const endInput = document.getElementById('cal-end');
+        const genBtn = document.getElementById('gen-slots');
+        const slotsContainer = document.getElementById('slots-container');
+
+        function isMonday(dateStr) {
+            const d = new Date(dateStr);
+            return d.getDay() === 1; // 1 = Monday
+        }
+
+        function toLocalDateTime(dateStr, timeStr) {
+            return new Date(dateStr + 'T' + timeStr);
+        }
+
+        function formatForServer(dt) {
+            const pad = n => (n < 10 ? '0' + n : n);
+            return dt.getFullYear() + '-' + pad(dt.getMonth()+1) + '-' + pad(dt.getDate()) + 'T' + pad(dt.getHours()) + ':' + pad(dt.getMinutes());
+        }
+
+        function renderSlots(slots) {
+            slotsContainer.innerHTML = '';
+            slots.forEach(s => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'px-3 py-2 rounded-lg border-2 border-sky-200 hover:border-sky-400 text-sm text-gray-700';
+                btn.textContent = s.label;
+                btn.addEventListener('click', () => {
+                    // Submit slot directly to backend as a new creneau
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '<%=request.getContextPath()%>/specialiste/creneau';
+
+                    const startField = document.createElement('input');
+                    startField.type = 'hidden';
+                    startField.name = 'dateDebut';
+                    startField.value = s.startIso;
+
+                    const endField = document.createElement('input');
+                    endField.type = 'hidden';
+                    endField.name = 'dateFin';
+                    endField.value = s.endIso;
+
+                    form.appendChild(startField);
+                    form.appendChild(endField);
+                    document.body.appendChild(form);
+                    form.submit();
+                });
+                slotsContainer.appendChild(btn);
+            });
+        }
+
+        genBtn && genBtn.addEventListener('click', () => {
+            const dateStr = dateInput && dateInput.value;
+            const startStr = startInput && startInput.value;
+            const endStr = endInput && endInput.value;
+            if (!dateStr || !startStr || !endStr) {
+                alert('Veuillez choisir la date, l\'heure de début et de fin.');
+                return;
+            }
+            if (!isMonday(dateStr)) {
+                alert('Veuillez sélectionner un lundi.');
+                return;
+            }
+            const start = toLocalDateTime(dateStr, startStr);
+            const end = toLocalDateTime(dateStr, endStr);
+            if (end <= start) {
+                alert('L\'heure de fin doit être après l\'heure de début.');
+                return;
+            }
+            const slots = [];
+            const durationMinutes = 30;
+            let cur = new Date(start.getTime());
+            while (cur < end) {
+                const next = new Date(cur.getTime() + durationMinutes * 60000);
+                if (next > end) break;
+                const label = cur.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) + ' - ' + next.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+                slots.push({
+                    label,
+                    startIso: formatForServer(cur),
+                    endIso: formatForServer(next)
+                });
+                cur = next;
+            }
+            renderSlots(slots);
         });
 </script>
 

@@ -109,9 +109,12 @@ public class PatientDAO {
 
     public List<Patient> getPatientsEnAttente() {
         EntityManager em = JpaUtil.getEntityManager();
+        LocalDate aujourdHui = LocalDate.now();
+
         try {
-            String jpql = "SELECT p FROM Patient p ORDER BY p.dateArrivee ASC";
+            String jpql = "SELECT p FROM Patient p WHERE DATE(p.dateArrivee) = :today ORDER BY p.dateArrivee ASC";
             TypedQuery<Patient> query = em.createQuery(jpql, Patient.class);
+            query.setParameter("today", aujourdHui);
             return query.getResultList();
         } finally {
             em.close();

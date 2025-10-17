@@ -187,6 +187,12 @@ public class SpecialisteServlet extends HttpServlet {
             request.setAttribute("expertisesTerminees", terminees);
             request.setAttribute("revenusTotal", revenusTotal);
 
+            // Load creneaux for calendar display
+            try {
+                List<Creneau> creneaux = creneauDAO.findBySpecialisteId(specialiste.getId());
+                request.setAttribute("creneaux", creneaux);
+            } catch (Exception ignored) {}
+
 
             if (tempsMoyenReponse != null) {
                 request.setAttribute("tempsMoyenReponse", tempsMoyenReponse);

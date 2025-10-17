@@ -216,12 +216,14 @@ public class GénéralisteServlet extends HttpServlet {
             
             List<Consultation> consultations = consultationDAO.findAll();
             request.setAttribute("consultations", consultations);
-            // Load available specialists for expertise form
+
             try {
-                org.example.medexpert.dao.SpecialisteDAO specialisteDAO = new org.example.medexpert.dao.SpecialisteDAO();
-                java.util.List<org.example.medexpert.model.Specialiste> specialistes = specialisteDAO.findAll();
+                SpecialisteDAO specialisteDAO = new SpecialisteDAO();
+                List<Specialiste> specialistes = specialisteDAO.findAll();
                 request.setAttribute("specialistes", specialistes);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+                request.setAttribute("errorMessage", "Erreur lors du chargement des specialistes: " + ignored.getMessage());
+            }
             
         } catch (Exception e) {
             request.setAttribute("errorMessage", "Erreur lors du chargement des données: " + e.getMessage());
