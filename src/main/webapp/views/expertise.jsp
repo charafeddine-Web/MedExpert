@@ -11,8 +11,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
-<div class="max-w-2xl mx-auto my-10 bg-white shadow rounded-xl p-8">
-    <h1 class="text-2xl font-bold mb-6">Créer une demande d'expertise</h1>
+<div class="max-w-2xl mx-auto my-10 bg-white shadow rounded-xl p-8 border border-slate-200">
+    <h1 class="text-2xl font-bold mb-6 text-slate-900">Créer une demande d'expertise</h1>
 
     <%
         Consultation consultation = (Consultation) request.getAttribute("consultation");
@@ -53,8 +53,8 @@
         </div>
 
         <div class="flex justify-end gap-3">
-            <a href="<%=request.getContextPath()%>/generaliste" class="px-5 py-2 border rounded">Annuler</a>
-            <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded">Envoyer</button>
+            <a href="<%=request.getContextPath()%>/generaliste" class="px-5 py-2 border rounded border-slate-300 text-slate-700 hover:bg-gray-50">Annuler</a>
+            <button type="submit" class="px-5 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded">Envoyer</button>
         </div>
     </form>
 </div>

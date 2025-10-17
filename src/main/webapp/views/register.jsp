@@ -25,10 +25,10 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-fuchsia-100 via-rose-100 to-orange-100">
-<div class="w-full max-w-6xl bg-white/90 rounded-3xl shadow-2xl p-0 flex flex-col md:flex-row overflow-hidden fade-in">
+<body class="min-h-screen flex items-center justify-center bg-gray-50">
+<div class="w-full max-w-5xl bg-white rounded-2xl shadow border border-slate-200 p-0 flex flex-col md:flex-row overflow-hidden">
     <!-- Illustration & Slogan -->
-    <div class="md:w-1/2 flex flex-col items-center justify-center bg-gradient-to-br from-rose-400 to-orange-300 p-10 text-white slide-in">
+    <div class="md:w-1/2 hidden md:flex flex-col items-center justify-center bg-sky-600 p-10 text-white">
         <svg class="w-32 mb-6 animate-bounce" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
             <ellipse cx="100" cy="170" rx="70" ry="15" fill="#fce7f3"/>
             <circle cx="100" cy="90" r="60" fill="#fff" fill-opacity=".15"/>
@@ -49,22 +49,22 @@
     </div>
     <!-- Formulaire -->
     <div class="md:w-1/2 w-full flex flex-col items-center justify-center p-10 fade-in">
-        <h2 class="text-2xl font-bold text-rose-600 mb-6 tracking-wide">Créer un compte</h2>
+        <h2 class="text-2xl font-bold text-slate-900 mb-6 tracking-tight">Créer un compte</h2>
         <% String error = (String) request.getAttribute("error"); %>
         <% if (error != null) { %>
-            <div class="w-full mb-4 px-4 py-3 rounded bg-red-100 border border-red-400 text-red-700 text-center text-base animate-pulse"><%= error %></div>
+            <div class="w-full mb-4 px-4 py-3 rounded bg-red-50 border border-red-200 text-red-700 text-center text-base"><%= error %></div>
         <% } %>
         <form action="<%=request.getContextPath()%>/register" method="post" autocomplete="off" class="w-full flex flex-col gap-4">
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="flex-1 flex flex-col gap-1">
                     <label for="nom" class="text-gray-700 font-medium">Nom</label>
                     <input type="text" id="nom" name="nom" placeholder="Votre nom" required
-                           class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
+                           class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-400 bg-gray-50 transition" />
                 </div>
                 <div class="flex-1 flex flex-col gap-1">
                     <label for="prenom" class="text-gray-700 font-medium">Prénom</label>
                     <input type="text" id="prenom" name="prenom" placeholder="Votre prénom" required
-                           class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
+                           class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-400 bg-gray-50 transition" />
                 </div>
             </div>
             <div class="flex flex-col md:flex-row gap-4">
@@ -76,7 +76,7 @@
                 <div class="flex-1 flex flex-col gap-1">
                     <label for="role" class="text-gray-700 font-medium">Rôle</label>
                     <select id="role" name="role" required
-                            class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition"
+                            class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-400 bg-gray-50 transition"
                             onchange="handleRoleChange()">
                         <option value="">Sélectionnez un rôle</option>
                         <option value="PATIENT">Patient</option>
@@ -90,28 +90,28 @@
                 <div class="flex-1 flex flex-col gap-1">
                     <label for="password" class="text-gray-700 font-medium">Mot de passe</label>
                     <input type="password" id="password" name="password" placeholder="Mot de passe" required
-                           class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
+                           class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-400 bg-gray-50 transition" />
                 </div>
                 <div class="flex-1 flex flex-col gap-1">
                     <label for="confirmPassword" class="text-gray-700 font-medium">Confirmer le mot de passe</label>
                     <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmez le mot de passe" required
-                           class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
+                           class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-400 bg-gray-50 transition" />
                 </div>
             </div>
             <div id="specialiteField" class="flex flex-col gap-1 hidden">
                 <label for="specialite" class="text-gray-700 font-medium">Spécialité</label>
                 <input type="text" id="specialite" name="specialite" placeholder="Votre spécialité médicale"
-                       class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
+                       class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-400 bg-gray-50 transition" />
             </div>
             <div id="serviceField" class="flex flex-col gap-1 hidden">
                 <label for="service" class="text-gray-700 font-medium">Service</label>
                 <input type="text" id="service" name="service" placeholder="Votre service (ex: Urgences, Pédiatrie)"
                        class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-gray-50 transition" />
             </div>
-            <button type="submit" class="w-full py-3 mt-2 rounded-xl bg-gradient-to-r from-rose-500 to-orange-400 text-white font-bold text-lg shadow-lg hover:from-rose-600 hover:to-orange-500 transition-all duration-300 transform hover:scale-105">Créer le compte</button>
+            <button type="submit" class="w-full py-3 mt-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-lg shadow">Créer le compte</button>
         </form>
         <div class="mt-6 text-gray-500 text-sm text-center">
-            Déjà inscrit ? <a href="<%=request.getContextPath()%>/views/login.jsp" class="text-rose-600 hover:underline font-semibold">Se connecter</a>
+            Déjà inscrit ? <a href="<%=request.getContextPath()%>/views/login.jsp" class="text-sky-600 hover:underline font-semibold">Se connecter</a>
         </div>
         <div class="mt-2 text-gray-400 text-xs text-center">
             © <%= java.time.Year.now() %> MedExpert. Tous droits réservés.

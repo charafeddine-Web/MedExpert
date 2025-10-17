@@ -41,6 +41,25 @@ public class DemandeExpertiseDAO {
         }
     }
 
+    public List<DemandeExpertise> findAllBySpecialisteIdWithDetails(Long specialisteId) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            // Load consultation and nested relations needed by JSP to avoid LazyInitializationException
+            TypedQuery<DemandeExpertise> query = em.createQuery(
+                    "SELECT d FROM DemandeExpertise d " +
+                            "LEFT JOIN FETCH d.consultation c " +
+                            "LEFT JOIN FETCH c.dossier ds " +
+                            "LEFT JOIN FETCH ds.patient p " +
+                            "LEFT JOIN FETCH c.generaliste g " +
+                            "WHERE d.specialiste.id = :sid",
+                    DemandeExpertise.class);
+            query.setParameter("sid", specialisteId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
     public void update(DemandeExpertise demande) {
         EntityManager em = JpaUtil.getEntityManager();
         try {

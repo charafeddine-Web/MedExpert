@@ -20,7 +20,7 @@ public class Specialiste extends  Utilisateur{
     @OneToMany(mappedBy = "specialiste", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DemandeExpertise> demandeList;
 
-    @OneToMany(mappedBy = "specialiste", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "specialiste", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Creneau> creneaux;
 
     @Column(nullable = true)

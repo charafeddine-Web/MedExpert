@@ -109,65 +109,65 @@
         }, 5000);
     </script>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
 <div class="flex w-full min-h-screen">
 
-    <nav class="w-72 gradient-bg text-white flex flex-col shadow-2xl slide-in lg:relative fixed z-50 h-screen">
+    <nav class="fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 text-slate-700 flex flex-col z-50 h-screen">
         <div class="p-8">
             <div class="flex items-center space-x-3 mb-8">
-                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+                    <svg class="w-7 h-7 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold tracking-tight">MedExpert</h2>
-                    <p class="text-xs text-white/70">Module Infirmier</p>
+                    <h2 class="text-2xl font-bold tracking-tight text-slate-900">MedExpert</h2>
+                    <p class="text-xs text-slate-500">Module Infirmier</p>
                 </div>
             </div>
         </div>
 
         <ul class="flex-1 px-4 space-y-2">
             <li>
-                <button onclick="toggleForm()" class="nav-item w-full text-left px-6 py-4 rounded-xl hover:bg-white/10 transition flex items-center space-x-3 group">
-                    <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-white/20 transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button onclick="toggleForm()" class="nav-item w-full text-left px-6 py-3 rounded-lg hover:bg-slate-100 transition flex items-center space-x-3 group">
+                    <div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center group-hover:bg-slate-200 transition">
+                        <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
                     </div>
-                    <span class="font-medium">Ajouter un patient</span>
+                    <span class="font-medium text-slate-900">Ajouter un patient</span>
                 </button>
             </li>
             <li>
-                <a href="#liste" class="nav-item block px-6 py-4 rounded-xl hover:bg-white/10 transition flex items-center space-x-3 group">
-                    <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-white/20 transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="#liste" class="nav-item block px-6 py-3 rounded-lg hover:bg-slate-100 transition flex items-center space-x-3 group">
+                    <div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center group-hover:bg-slate-200 transition">
+                        <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
                     </div>
-                    <span class="font-medium">Patients du jour</span>
+                    <span class="font-medium text-slate-900">Patients du jour</span>
                 </a>
             </li>
             <li>
-                <a href="#liste" class="nav-item block px-6 py-4 rounded-xl hover:bg-white/10 transition flex items-center space-x-3 group">
-                    <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-white/20 transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="#liste" class="nav-item block px-6 py-3 rounded-lg hover:bg-slate-100 transition flex items-center space-x-3 group">
+                    <div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center group-hover:bg-slate-200 transition">
+                        <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
                     </div>
                     <form action="<%=request.getContextPath()%>/logout" method="post" class="inline">
-                    <button type="submit" class="font-medium">Déconnexion</button>
+                    <button type="submit" class="font-medium text-slate-900">Déconnexion</button>
                     </form>
                 </a>
             </li>
         </ul>
 
-        <div class="p-6 border-t border-white/10">
-            <p class="text-xs text-white/50 text-center">© <%= java.time.Year.now() %> MedExpert</p>
+        <div class="p-6 border-t border-slate-100">
+            <p class="text-xs text-slate-400 text-center">© <%= java.time.Year.now() %> MedExpert</p>
         </div>
     </nav>
 
-    <main class="flex-1 p-4 lg:p-8 overflow-auto">
+    <main class="flex-1 p-4 lg:p-8 overflow-auto lg:ml-64 ml-0">
 
         <div class="max-w-6xl mx-auto mb-6 fade-in">
             <%

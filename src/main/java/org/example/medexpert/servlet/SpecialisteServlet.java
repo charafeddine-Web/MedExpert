@@ -57,6 +57,12 @@ public class SpecialisteServlet extends HttpServlet {
             }
         }
 
+        // S'assurer que le spécialiste a ses créneaux chargés
+        if (specialiste != null) {
+            specialiste = specialisteDAO.findById(specialiste.getId());
+            request.getSession().setAttribute("user", specialiste);
+        }
+        
         loadDashboardData(request, specialiste);
 
         request.getRequestDispatcher("/views/specialiste.jsp").forward(request, response);
@@ -114,6 +120,9 @@ public class SpecialisteServlet extends HttpServlet {
                         created++;
                     }
                     if (created > 0) {
+                        // Recharger le spécialiste avec ses créneaux mis à jour
+                        specialiste = specialisteDAO.findById(specialiste.getId());
+                        request.getSession().setAttribute("user", specialiste);
                         request.getSession().setAttribute("successMessage", created + " créneau(x) ajoutés.");
                     } else {
                         request.getSession().setAttribute("infoMessage", "Aucun créneau valide à enregistrer.");
@@ -129,6 +138,9 @@ public class SpecialisteServlet extends HttpServlet {
                         c.setDisponible(true);
                         c.setSpecialiste(specialiste);
                         creneauDAO.create(c);
+                        // Recharger le spécialiste avec ses créneaux mis à jour
+                        specialiste = specialisteDAO.findById(specialiste.getId());
+                        request.getSession().setAttribute("user", specialiste);
                         request.getSession().setAttribute("successMessage", "Créneau ajouté.");
                     } else {
                         request.getSession().setAttribute("errorMessage", "Veuillez renseigner les dates de début et fin.");
@@ -147,6 +159,13 @@ public class SpecialisteServlet extends HttpServlet {
                 DemandeExpertise demande = demandeExpertiseDAO.findById(expertiseId);
                 if (demande == null || demande.getSpecialiste() == null || !Objects.equals(demande.getSpecialiste().getId(), specialiste.getId())) {
                     request.getSession().setAttribute("errorMessage", "Demande introuvable ou non autorisée.");
+                    response.sendRedirect(request.getContextPath() + "/specialiste");
+                    return;
+                }
+
+                // Empêcher un deuxième avis si déjà existant
+                if (demande.getAvis() != null && !demande.getAvis().isBlank()) {
+                    request.getSession().setAttribute("infoMessage", "Un avis a déjà été soumis pour cette demande.");
                     response.sendRedirect(request.getContextPath() + "/specialiste");
                     return;
                 }
@@ -176,12 +195,7 @@ public class SpecialisteServlet extends HttpServlet {
 
     private void loadDashboardData(HttpServletRequest request, Specialiste specialiste) {
         try {
-            List<DemandeExpertise> all = demandeExpertiseDAO.findAll();
-
-            List<DemandeExpertise> expertises = all.stream()
-                    .filter(d -> d.getSpecialiste() != null && d.getSpecialiste().getId() != null)
-                    .filter(d -> Objects.equals(d.getSpecialiste().getId(), specialiste.getId()))
-                    .collect(Collectors.toList());
+            List<DemandeExpertise> expertises = demandeExpertiseDAO.findAllBySpecialisteIdWithDetails(specialiste.getId());
 
             int total = expertises.size();
             int enAttente = (int) expertises.stream().filter(d -> d.getStatus() == StatutExpertise.EN_ATTENTE).count();
