@@ -549,7 +549,10 @@
                                 class="px-8 py-4 rounded-xl border-2 border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition">
                             Annuler
                         </button>
-
+                        <button type="submit" onclick="showSection('dashboard')"
+                                class="px-8 py-4 rounded-xl border-2 border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition">
+                            Confirmer
+                        </button>
                     </div>
                 </form>
             </div>
@@ -837,19 +840,16 @@
             });
         }
 
-        // Ouvrir modal de détails
         function openDetailModal(expertiseId) {
             document.getElementById('modal-detail-' + expertiseId).classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
-        // Fermer modal
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
             document.body.style.overflow = 'auto';
         }
 
-        // Ouvrir formulaire d'avis
         function openAvisForm(expertiseId, patientNom) {
             document.getElementById('expertiseIdAvis').value = expertiseId;
             document.getElementById('patientInfoAvis').textContent = patientNom;
@@ -857,7 +857,6 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // Auto-masquer les messages après 5 secondes
         setTimeout(() => {
             const messages = document.querySelectorAll('[id^="message"]');
             messages.forEach(msg => {
@@ -869,7 +868,6 @@
             });
         }, 5000);
 
-        // Fermer modal en cliquant à l'extérieur
         document.addEventListener('click', function(event) {
             if (event.target.classList.contains('modal-overlay')) {
                 closeModal(event.target.id);
@@ -948,7 +946,6 @@
             });
             calendar.render();
 
-            // Batch actions
             const saveBtn = document.getElementById('save-slots');
             const clearBtn = document.getElementById('clear-slots');
 

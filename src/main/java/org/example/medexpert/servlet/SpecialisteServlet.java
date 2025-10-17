@@ -119,7 +119,7 @@ public class SpecialisteServlet extends HttpServlet {
                         created++;
                     }
                     if (created > 0) {
-                        // Recharger le spécialiste avec ses créneaux mis à jour
+
                         specialiste = specialisteDAO.findById(specialiste.getId());
                         request.getSession().setAttribute("user", specialiste);
                         request.getSession().setAttribute("successMessage", created + " créneau(x) ajoutés.");
@@ -127,7 +127,6 @@ public class SpecialisteServlet extends HttpServlet {
                         request.getSession().setAttribute("infoMessage", "Aucun créneau valide à enregistrer.");
                     }
                 } else {
-                    // Fallback single
                     String dateDebut = request.getParameter("dateDebut");
                     String dateFin = request.getParameter("dateFin");
                     if (dateDebut != null && dateFin != null && !dateDebut.isBlank() && !dateFin.isBlank()) {
@@ -137,7 +136,7 @@ public class SpecialisteServlet extends HttpServlet {
                         c.setDisponible(true);
                         c.setSpecialiste(specialiste);
                         creneauDAO.create(c);
-                        // Recharger le spécialiste avec ses créneaux mis à jour
+
                         specialiste = specialisteDAO.findById(specialiste.getId());
                         request.getSession().setAttribute("user", specialiste);
                         request.getSession().setAttribute("successMessage", "Créneau ajouté.");
@@ -162,7 +161,6 @@ public class SpecialisteServlet extends HttpServlet {
                     return;
                 }
 
-                // Empêcher un deuxième avis si déjà existant
                 if (demande.getAvis() != null && !demande.getAvis().isBlank()) {
                     request.getSession().setAttribute("infoMessage", "Un avis a déjà été soumis pour cette demande.");
                     response.sendRedirect(request.getContextPath() + "/specialiste");
@@ -201,20 +199,12 @@ public class SpecialisteServlet extends HttpServlet {
             int enCours = (int) expertises.stream().filter(d -> d.getStatus() == StatutExpertise.EN_COURS).count();
             int terminees = (int) expertises.stream().filter(d -> d.getStatus() == StatutExpertise.TERMINEE).count();
 
-            Integer tempsMoyenReponse = null;
-            List<DemandeExpertise> completed = expertises.stream()
-                    .filter(d -> d.getStatus() == StatutExpertise.TERMINEE && d.getDateAvis() != null && d.getDateDemande() != null)
-                    .collect(Collectors.toList());
-
-            if (!completed.isEmpty()) {
-                long totalHours = 0L;
-                for (DemandeExpertise d : completed) {
-                    totalHours += Duration.between(d.getDateDemande(), d.getDateAvis()).toHours();
-                }
-                tempsMoyenReponse = (int) Math.max(0, totalHours / completed.size());
-            }
 
             Double revenusTotal = 0.0;
+
+             revenusTotal= terminees * (specialiste.getTarif());
+
+
 
             request.setAttribute("specialiste", specialiste);
             request.setAttribute("expertises", expertises);
@@ -224,10 +214,6 @@ public class SpecialisteServlet extends HttpServlet {
             request.setAttribute("expertisesTerminees", terminees);
             request.setAttribute("revenusTotal", revenusTotal);
 
-
-            if (tempsMoyenReponse != null) {
-                request.setAttribute("tempsMoyenReponse", tempsMoyenReponse);
-            }
 
         } catch (Exception e) {
             request.setAttribute("errorMessage", "Erreur lors du chargement des données: " + e.getMessage());

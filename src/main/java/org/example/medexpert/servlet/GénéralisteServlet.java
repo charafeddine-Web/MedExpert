@@ -239,10 +239,12 @@ public class GénéralisteServlet extends HttpServlet {
             de.setDateDemande(java.time.LocalDateTime.now());
             de.setStatus(StatutExpertise.EN_ATTENTE);
 
+
+            Long specialisteId = Long.parseLong(specialisteIdParam);
+            SpecialisteDAO specialisteDAO = new SpecialisteDAO();
+            Specialiste specialiste = specialisteDAO.findById(specialisteId);
+
             if (specialisteIdParam != null && !specialisteIdParam.isEmpty()) {
-                Long specialisteId = Long.parseLong(specialisteIdParam);
-                SpecialisteDAO specialisteDAO = new SpecialisteDAO();
-               Specialiste specialiste = specialisteDAO.findById(specialisteId);
                 if (specialiste == null) {
                     HttpSession sessionErr2 = request.getSession();
                     sessionErr2.setAttribute("errorMessage", "Spécialiste introuvable.");
@@ -250,6 +252,7 @@ public class GénéralisteServlet extends HttpServlet {
                     return;
                 }
                 de.setSpecialiste(specialiste);
+
                 
                 if (creneauIdParam != null && !creneauIdParam.isEmpty()) {
                     try {
@@ -273,6 +276,8 @@ public class GénéralisteServlet extends HttpServlet {
             }
 
             deDao.create(de);
+            consultation.setCout(consultation.getCout()+specialiste.getTarif());
+            consultationDAO.update(consultation);
 
 
 
@@ -296,7 +301,7 @@ public class GénéralisteServlet extends HttpServlet {
             request.setAttribute("nbActesJour", actesAujourdhui.size());
             
             List<Consultation> consultations = consultationDAO.findAll();
-            request.setAttribute("consultations", consultations);
+            request.setAttribute("consultations", consultationsRecentes);
 
 
             String specIdParam = request.getParameter("specialite");

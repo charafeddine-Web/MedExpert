@@ -689,16 +689,19 @@
                         <select id="specialiteSelect" onchange="filterSpecialistes()"
                                 class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none">
                             <option value="">-- Sélectionner une spécialité --</option>
-                            <option value="Cardiologie">Cardiologie</option>
-                            <option value="Pneumologie">Pneumologie</option>
-                            <option value="Neurologie">Neurologie</option>
-                            <option value="Gastro-entérologie">Gastro-entérologie</option>
-                            <option value="Endocrinologie">Endocrinologie</option>
-                            <option value="Dermatologie">Dermatologie</option>
-                            <option value="Rhumatologie">Rhumatologie</option>
-                            <option value="Psychiatrie">Psychiatrie</option>
-                            <option value="Néphrologie">Néphrologie</option>
-                            <option value="Orthopédie">Orthopédie</option>
+                            <option value="CARDIOLOGIE" >Cardiologie</option>
+                            <option value="DERMATOLOGIE" >Dermatologie</option>
+                            <option value="ENDOCRINOLOGIE" >Endocrinologie</option>
+                            <option value="GASTROENTEROLOGIE" >Gastroentérologie</option>
+                            <option value="NEUROLOGIE">Neurologie</option>
+                            <option value="OPHTALMOLOGIE" >Ophtalmologie</option>
+                            <option value="ORL" >ORL</option>
+                            <option value="PEDIATRIE" >Pédiatrie</option>
+                            <option value="PNEUMOLOGIE" >Pneumologie</option>
+                            <option value="PSYCHIATRIE" >Psychiatrie</option>
+                            <option value="RADIOLOGIE" >Radiologie</option>
+                            <option value="RHUMATOLOGIE" >Rhumatologie</option>
+                            <option value="UROLOGIE" >Urologie</option>
                         </select>
                     </div>
 
