@@ -61,6 +61,74 @@ public class GénéralisteServlet extends HttpServlet {
             Long patientId = Long.parseLong(request.getParameter("patientId"));
             request.setAttribute("patientId", patientId);
             request.getRequestDispatcher("/views/generaliste.jsp").forward(request, response);
+        } else if ("loadCreneaux".equals(action)) {
+
+            String specialisteIdParam = request.getParameter("specialisteId");
+            if (specialisteIdParam != null && !specialisteIdParam.isEmpty()) {
+                try {
+                    Long specialisteId = Long.parseLong(specialisteIdParam);
+                    List<Creneau> creneaux = creneauDAO.findAllAjourBySpecialiste(specialisteId);
+                    
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    
+                    StringBuilder json = new StringBuilder();
+                    json.append("{\"creneaux\":[");
+                    
+                    for (int i = 0; i < creneaux.size(); i++) {
+                        Creneau c = creneaux.get(i);
+                        if (i > 0) json.append(",");
+                        json.append("{");
+                        json.append("\"id\":").append(c.getId()).append(",");
+                        json.append("\"dateDebut\":\"").append(c.getDateDebut()).append("\",");
+                        json.append("\"dateFin\":\"").append(c.getDateFin()).append("\",");
+                        json.append("\"disponible\":").append(c.getDisponible());
+                        json.append("}");
+                    }
+                    
+                    json.append("]}");
+                    response.getWriter().write(json.toString());
+                    return;
+                } catch (NumberFormatException e) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.getWriter().write("{\"error\":\"ID spécialiste invalide\"}");
+                    return;
+                }
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\":\"ID spécialiste manquant\"}");
+                return;
+            }
+        } else if ("loadSpecialistes".equals(action)) {
+            try {
+                SpecialisteDAO specialisteDAO = new SpecialisteDAO();
+                List<Specialiste> specialistes = specialisteDAO.findAll();
+                
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                
+                StringBuilder json = new StringBuilder();
+                json.append("{\"specialistes\":[");
+                
+                for (int i = 0; i < specialistes.size(); i++) {
+                    Specialiste s = specialistes.get(i);
+                    if (i > 0) json.append(",");
+                    json.append("{");
+                    json.append("\"id\":").append(s.getId()).append(",");
+                    json.append("\"nom\":\"").append(s.getNom()).append("\",");
+                    json.append("\"prenom\":\"").append(s.getPrenom()).append("\",");
+                    json.append("\"specialite\":\"").append(s.getSpecialite() != null ? s.getSpecialite() : "").append("\"");
+                    json.append("}");
+                }
+                
+                json.append("]}");
+                response.getWriter().write(json.toString());
+                return;
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("{\"error\":\"Erreur lors du chargement des spécialistes\"}");
+                return;
+            }
         }
          else {
             request.getRequestDispatcher("/views/generaliste.jsp").forward(request, response);
@@ -152,6 +220,7 @@ public class GénéralisteServlet extends HttpServlet {
             String question = request.getParameter("question");
             String priorite = request.getParameter("priorite");
             String specialisteIdParam = request.getParameter("specialisteId");
+            String creneauIdParam = request.getParameter("creneauId");
 
             Consultation consultation = consultationDAO.findById(consultationId);
 
@@ -181,6 +250,19 @@ public class GénéralisteServlet extends HttpServlet {
                     return;
                 }
                 de.setSpecialiste(specialiste);
+                
+//                // Ajouter le créneau si sélectionné
+//                if (creneauIdParam != null && !creneauIdParam.isEmpty()) {
+//                    try {
+//                        Long creneauId = Long.parseLong(creneauIdParam);
+//                        Creneau creneau = creneauDAO.findById(creneauId);
+//                        if (creneau != null) {
+//                            de.setCreneau(creneau);
+//                        }
+//                    } catch (NumberFormatException e) {
+//                    }
+//                }
+
             } else {
                 HttpSession sessionErr2 = request.getSession();
                 sessionErr2.setAttribute("errorMessage", "Veuillez choisir un spécialiste.");
@@ -210,16 +292,6 @@ public class GénéralisteServlet extends HttpServlet {
             
             List<Consultation> consultations = consultationDAO.findAll();
             request.setAttribute("consultations", consultations);
-//
-//            String specIdParam = request.getParameter("specialisteId");
-//            if (specIdParam != null && !specIdParam.isEmpty()) {
-//                Long specId = Long.parseLong(specIdParam)x;
-//                SpecialisteDAO specialisteDAO = new SpecialisteDAO();
-//                Specialiste spec = specialisteDAO.findById(specId);
-//
-//                List<Creneau> creneaux = creneauDAO.findAllAjourBySpecialiste(spec.getId());
-//                request.setAttribute("creneaux", creneaux);
-//            }
 
 
             String specIdParam = request.getParameter("specialite");

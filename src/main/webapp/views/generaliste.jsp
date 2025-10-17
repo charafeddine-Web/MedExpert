@@ -166,6 +166,69 @@
                 if (msg) msg.style.display = 'none';
             });
         }, 5000);
+
+        const specialistesData = [];
+
+        function filterSpecialistes() {
+            const specialiteSelect = document.getElementById('specialiteSelect');
+            const specialisteSelect = document.getElementById('specialisteSelect');
+            const creneauSelect = document.getElementById('creneauSelect');
+            
+            const selectedSpecialite = specialiteSelect.value;
+            
+            specialisteSelect.innerHTML = '<option value="">-- Sélectionner un spécialiste --</option>';
+            creneauSelect.innerHTML = '<option value="">-- Sélectionner d\'abord un spécialiste --</option>';
+            
+            if (selectedSpecialite) {
+                const filteredSpecialistes = specialistesData.filter(s => s.specialite === selectedSpecialite);
+                
+                filteredSpecialistes.forEach(specialiste => {
+                    const option = document.createElement('option');
+                    option.value = specialiste.id;
+                    option.textContent = specialiste.prenom + ' ' + specialiste.nom;
+                    specialisteSelect.appendChild(option);
+                });
+                
+                if (filteredSpecialistes.length === 0) {
+                    specialisteSelect.innerHTML = '<option value="">Aucun spécialiste trouvé pour cette spécialité</option>';
+                }
+            } else {
+                specialisteSelect.innerHTML = '<option value="">-- Sélectionner d\'abord une spécialité --</option>';
+            }
+        }
+
+        function loadCreneaux() {
+            const specialisteSelect = document.getElementById('specialisteSelect');
+            const creneauSelect = document.getElementById('creneauSelect');
+            const selectedSpecialisteId = specialisteSelect.value;
+
+            creneauSelect.innerHTML = '<option value="">-- Chargement des créneaux... --</option>';
+
+            if (selectedSpecialisteId) {
+                fetch('<%=request.getContextPath()%>/generaliste?action=loadCreneaux&specialisteId=' + selectedSpecialisteId)
+                    .then(response => response.json())
+                    .then(data => {
+                        creneauSelect.innerHTML = '<option value="">-- Sélectionner un créneau (optionnel) --</option>';
+
+                        if (data.creneaux && data.creneaux.length > 0) {
+                            data.creneaux.forEach(creneau => {
+                                const option = document.createElement('option');
+                                option.value = creneau.id;
+                                option.textContent = creneau.dateDebut + ' - ' + creneau.dateFin;
+                                creneauSelect.appendChild(option);
+                            });
+                        } else {
+                            creneauSelect.innerHTML = '<option value="">Aucun créneau disponible aujourd\'hui</option>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors du chargement des créneaux:', error);
+                        creneauSelect.innerHTML = '<option value="">Erreur lors du chargement</option>';
+                    });
+            } else {
+                creneauSelect.innerHTML = '<option value="">-- Sélectionner d\'abord un spécialiste --</option>';
+            }
+        }
     </script>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -619,13 +682,12 @@
                         <p class="text-sm text-gray-500 mt-1">Créer une demande pour une consultation en attente d'avis</p>
                     </div>
                 </div>
-
                 <form action="<%=request.getContextPath()%>/generaliste/expertise" method="post" class="space-y-6">
                     <input type="hidden" id="expertiseConsultationId" name="consultationId" />
 
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Spécialité</label>
-                        <select id="specialiteSelect"
+                        <select id="specialiteSelect" onchange="filterSpecialistes()"
                                 class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none">
                             <option value="">-- Sélectionner une spécialité --</option>
                             <option value="Cardiologie">Cardiologie</option>
@@ -644,37 +706,17 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="lg:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Spécialiste</label>
-                            <select name="specialisteId" required
+                            <select id="specialisteSelect" name="specialisteId" required onchange="loadCreneaux()"
                                     class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none">
-                                <option value="">-- Sélectionner un spécialiste --</option>
-                                <%
-                                    List<Specialiste> specialistes = (List<Specialiste>) request.getAttribute("specialistes");
-                                    if (specialistes != null) {
-                                        for (Specialiste s : specialistes) {
-                                %>
-                                <option value="<%= s.getId() %>"><%= s.getPrenom() %> <%= s.getNom() %></option>
-                                <%
-                                        }
-                                    }
-                                %>
+                                <option value="">-- Sélectionner d'abord une spécialité --</option>
                             </select>
                         </div>
 
                         <div class="lg:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Créneau souhaité</label>
-                            <select name="creneauId"
+                            <select id="creneauSelect" name="creneauId"
                                     class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none">
-                                <option value="">-- Sélectionner un créneau (optionnel) --</option>
-                                <%
-                                    List<Creneau> creneaux = (List<Creneau>) request.getAttribute("creneaux");
-                                    if (creneaux != null) {
-                                        for (org.example.medexpert.model.Creneau c : creneaux) {
-                                %>
-                                <option value="<%= c.getId() %>"><%= c.getDateDebut() %> - <%= c.getDateFin() %></option>
-                                <%
-                                        }
-                                    }
-                                %>
+                                <option value="">-- Sélectionner d'abord un spécialiste --</option>
                             </select>
                         </div>
 
@@ -789,5 +831,20 @@
 
     </main>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('<%=request.getContextPath()%>/generaliste?action=loadSpecialistes')
+            .then(response => response.json())
+            .then(data => {
+                specialistesData.length = 0;
+                specialistesData.push(...data.specialistes);
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des spécialistes:', error);
+            });
+    });
+</script>
+
 </body>
 </html>
