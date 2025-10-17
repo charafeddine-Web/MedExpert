@@ -201,12 +201,8 @@
 <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
     <%
     HttpSession sessionUser = request.getSession(false);
-    Utilisateur user = (Utilisateur) (sessionUser != null ? sessionUser.getAttribute("user") : null);
-//    if (user == null || !"MEDECIN_SPECIALISTE".equals(user.getRole())) {
-//        response.sendRedirect(request.getContextPath() + "/views/login.jsp");
-//        return;
-//    }
 
+    Utilisateur user = (Utilisateur) (sessionUser != null ? sessionUser.getAttribute("user") : null);
     Specialiste specialiste = (Specialiste) request.getAttribute("specialiste");
     List<DemandeExpertise> expertises = (List<DemandeExpertise>) request.getAttribute("expertises");
     Integer totalExpertises = (Integer) request.getAttribute("totalExpertises");
@@ -216,7 +212,7 @@
     Double revenusTotal = (Double) request.getAttribute("revenusTotal");
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     SimpleDateFormat sdfTime = new SimpleDateFormat("dd/MM/yyyy à HH:mm");
-%>
+    %>
 
 <div class="flex w-full min-h-screen">
     <!-- Sidebar Navigation -->
@@ -281,16 +277,7 @@
                     <span class="font-medium">Demandes d'expertise</span>
                 </button>
             </li>
-            <li>
-                <button onclick="showSection('statistiques')" class="nav-item w-full text-left px-6 py-4 rounded-xl hover:bg-white/10 transition flex items-center space-x-3 group">
-                    <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-white/20 transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                        </svg>
-                    </div>
-                    <span class="font-medium">Mes statistiques</span>
-                </button>
-            </li>
+
         </ul>
 
         <div class="p-4 space-y-2">
@@ -437,16 +424,6 @@
                         <h4 class="font-bold text-gray-800 mb-2">Configurer profil</h4>
                         <p class="text-sm text-gray-600">Mettez à jour vos informations</p>
                     </button>
-
-                    <button onclick="showSection('statistiques')" class="p-6 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl border-2 border-emerald-100 hover:border-emerald-300 transition group">
-                        <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-green-500 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                            </svg>
-                        </div>
-                        <h4 class="font-bold text-gray-800 mb-2">Statistiques</h4>
-                        <p class="text-sm text-gray-600">Analysez votre activité</p>
-                    </button>
                 </div>
             </div>
         </section>
@@ -488,7 +465,54 @@
                                 <option value="UROLOGIE" <%= specialiste != null && "UROLOGIE".equals(specialiste.getSpecialite()) ? "selected" : "" %>>Urologie</option>
                             </select>
                         </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Tarif (EUR)</label>
+                            <input type="number" step="0.01" min="0" name="tarif" value="<%= specialiste != null && specialiste.getTarif() != null ? specialiste.getTarif() : "" %>"
+                                   class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-sky-500 focus:outline-none" placeholder="Ex: 75.00" />
+                        </div>
+                    </div>
 
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Les Creneau *</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Date début</label>
+                                    <input type="datetime-local" name="dateDebut"
+                                           class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-sky-500 focus:outline-none" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Date fin</label>
+                                    <input type="datetime-local" name="dateFin"
+                                           class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-sky-500 focus:outline-none" />
+                                </div>
+                                <div class="md:col-span-2">
+                                    <button formaction="<%=request.getContextPath()%>/specialiste/creneau" formmethod="post" type="submit"
+                                            class="px-5 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold hover:opacity-90">Ajouter le créneau</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Mes créneaux</label>
+                            <div class="border-2 border-gray-100 rounded-xl p-4 max-h-64 overflow-auto">
+                                <ul class="space-y-2">
+                                    <%
+                                        if (specialiste != null && specialiste.getCreneaux() != null) {
+                                            for (org.example.medexpert.model.Creneau c : specialiste.getCreneaux()) {
+                                    %>
+                                        <li class="text-sm text-gray-700 flex items-center justify-between">
+                                            <span><%= c.getDateDebut() != null ? sdfTime.format(java.sql.Timestamp.valueOf(c.getDateDebut())) : "" %> - <%= c.getDateFin() != null ? sdfTime.format(java.sql.Timestamp.valueOf(c.getDateFin())) : "" %></span>
+                                            <span class="text-xs px-2 py-1 rounded bg-<%= Boolean.TRUE.equals(c.getDisponible()) ? "green" : "red" %>-100 text-<%= Boolean.TRUE.equals(c.getDisponible()) ? "green" : "red" %>-700">
+                                                <%= Boolean.TRUE.equals(c.getDisponible()) ? "Disponible" : "Indisponible" %>
+                                            </span>
+                                        </li>
+                                    <%
+                                            }
+                                        }
+                                    %>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="flex justify-end space-x-4 mt-8">
@@ -570,6 +594,45 @@
                             <th class="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
                         </tr>
                         </thead>
+                        <tbody>
+                        <%
+                            if (expertises != null) {
+                                for (DemandeExpertise de : expertises) {
+                                    String patientNom = "N/A";
+                                    String medecinNom = "N/A";
+                                    try {
+                                        if (de.getConsultation() != null && de.getConsultation().getDossier() != null && de.getConsultation().getDossier().getPatient() != null) {
+                                            patientNom = de.getConsultation().getDossier().getPatient().getNom() + " " + de.getConsultation().getDossier().getPatient().getPrenom();
+                                        }
+                                    } catch (Exception ignored) {}
+                                    try {
+                                        if (de.getConsultation() != null && de.getConsultation().getGeneraliste() != null) {
+                                            medecinNom = de.getConsultation().getGeneraliste().getNom() + " " + de.getConsultation().getGeneraliste().getPrenom();
+                                        }
+                                    } catch (Exception ignored) {}
+                        %>
+                        <tr class="table-row-hover expertise-row" data-statut="<%= de.getStatus() != null ? de.getStatus().name() : "" %>">
+                            <td class="px-6 py-4 text-sm text-gray-700">#<%= de.getId() %></td>
+                            <td class="px-6 py-4 text-sm text-gray-700"><%= patientNom %></td>
+                            <td class="px-6 py-4 text-sm text-gray-700"><%= de.getDateDemande() != null ? sdfTime.format(java.sql.Timestamp.valueOf(de.getDateDemande())) : "" %></td>
+                            <td class="px-6 py-4 text-sm text-gray-700"><%= medecinNom %></td>
+                            <td class="px-6 py-4 text-sm">
+                                <span class="badge <%= de.getStatus() == null ? "" : (de.getStatus().name().equals("EN_ATTENTE") ? "badge-warning" : (de.getStatus().name().equals("EN_COURS") ? "badge-info" : "badge-success")) %>">
+                                    <%= de.getStatus() != null ? de.getStatus().name() : "" %>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-700"><%= de.getPriorite() != null ? de.getPriorite() : "" %></td>
+                            <td class="px-6 py-4 text-sm text-center">
+                                <button onclick="openAvisForm('<%= de.getId() %>', '<%= patientNom %>')" class="px-4 py-2 rounded-lg text-white gradient-bg-accent hover:opacity-90">
+                                    Donner un avis
+                                </button>
+                            </td>
+                        </tr>
+                        <%
+                                }
+                            }
+                        %>
+                        </tbody>
                     </table>
 
                 </div>
@@ -634,229 +697,11 @@
         </section>
 
         <!-- Section Statistiques -->
-        <section id="statistiques" class="section w-full max-w-7xl mx-auto py-6 fade-in">
-            <div class="space-y-6">
-                <!-- Header -->
-                <div class="glass-effect rounded-2xl shadow-2xl p-8">
-                    <div class="flex items-center space-x-3 mb-6">
-                        <div class="w-12 h-12 gradient-bg-specialist rounded-xl flex items-center justify-center">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-3xl font-bold bg-gradient-to-r from-sky-600 to-indigo-600 bg-clip-text text-transparent">
-                                Mes statistiques
-                            </h3>
-                            <p class="text-sm text-gray-500 mt-1">Aperçu de votre activité professionnelle</p>
-                        </div>
-                    </div>
 
-                    <!-- Stats Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-100">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                    </svg>
-                                </div>
-                                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                                </svg>
-                            </div>
-                            <p class="text-sm font-medium text-gray-600 mb-1">Total dossiers</p>
-                            <p class="text-3xl font-bold text-blue-600"><%= totalExpertises != null ? totalExpertises : 0 %></p>
-                        </div>
-
-                        <div class="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-6 border-2 border-emerald-100">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-green-500 rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                </div>
-                                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                                </svg>
-                            </div>
-                            <p class="text-sm font-medium text-gray-600 mb-1">Complétées</p>
-                            <p class="text-3xl font-bold text-emerald-600"><%= expertisesTerminees != null ? expertisesTerminees : 0 %></p>
-                        </div>
-
-                        <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border-2 border-amber-100">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                </div>
-                                <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/>
-                                </svg>
-                            </div>
-                            <p class="text-sm font-medium text-gray-600 mb-1">En attente</p>
-                            <p class="text-3xl font-bold text-amber-600"><%= expertisesEnAttente != null ? expertisesEnAttente : 0 %></p>
-                        </div>
-
-                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border-2 border-purple-100">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                </div>
-                                <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                                </svg>
-                            </div>
-                            <p class="text-sm font-medium text-gray-600 mb-1">Revenus totaux</p>
-                            <p class="text-3xl font-bold text-purple-600">
-                                <%= revenusTotal != null ? String.format("%.2f", revenusTotal) : "0.00" %> €
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Répartition par statut -->
-                <div class="glass-effect rounded-2xl shadow-2xl p-8">
-                    <h4 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                        <svg class="w-6 h-6 mr-2 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
-                        </svg>
-                        Répartition par statut
-                    </h4>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border-2 border-amber-100">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-sm font-semibold text-gray-700">En attente</span>
-                                <span class="badge badge-warning">
-                                    <%= (expertisesEnAttente != null && totalExpertises != null && totalExpertises > 0)
-                                        ? String.format("%.0f%%", (expertisesEnAttente * 100.0 / totalExpertises))
-                                        : "0%" %>
-                                </span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                                <div class="bg-gradient-to-r from-amber-400 to-orange-500 h-3 rounded-full transition-all duration-500"
-                                     style="width: <%= (expertisesEnAttente != null && totalExpertises != null && totalExpertises > 0)
-                                        ? (expertisesEnAttente * 100 / totalExpertises)
-                                        : 0 %>%"></div>
-                            </div>
-                            <p class="text-2xl font-bold text-amber-600 mt-3">
-                                <%= expertisesEnAttente != null ? expertisesEnAttente : 0 %>
-                            </p>
-                        </div>
-
-                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-100">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-sm font-semibold text-gray-700">En cours</span>
-                                <span class="badge badge-info">
-                                    <%= (expertisesEnCours != null && totalExpertises != null && totalExpertises > 0)
-                                        ? String.format("%.0f%%", (expertisesEnCours * 100.0 / totalExpertises))
-                                        : "0%" %>
-                                </span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                                <div class="bg-gradient-to-r from-blue-400 to-indigo-500 h-3 rounded-full transition-all duration-500"
-                                     style="width: <%= (expertisesEnCours != null && totalExpertises != null && totalExpertises > 0)
-                                        ? (expertisesEnCours * 100 / totalExpertises)
-                                        : 0 %>%"></div>
-                            </div>
-                            <p class="text-2xl font-bold text-blue-600 mt-3">
-                                <%= expertisesEnCours != null ? expertisesEnCours : 0 %>
-                            </p>
-                        </div>
-
-                        <div class="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-6 border-2 border-emerald-100">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-sm font-semibold text-gray-700">Terminées</span>
-                                <span class="badge badge-success">
-                                    <%= (expertisesTerminees != null && totalExpertises != null && totalExpertises > 0)
-                                        ? String.format("%.0f%%", (expertisesTerminees * 100.0 / totalExpertises))
-                                        : "0%" %>
-                                </span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                                <div class="bg-gradient-to-r from-emerald-400 to-green-500 h-3 rounded-full transition-all duration-500"
-                                     style="width: <%= (expertisesTerminees != null && totalExpertises != null && totalExpertises > 0)
-                                        ? (expertisesTerminees * 100 / totalExpertises)
-                                        : 0 %>%"></div>
-                            </div>
-                            <p class="text-2xl font-bold text-emerald-600 mt-3">
-                                <%= expertisesTerminees != null ? expertisesTerminees : 0 %>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Indicateurs de performance -->
-                <div class="glass-effect rounded-2xl shadow-2xl p-8">
-                    <h4 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                        <svg class="w-6 h-6 mr-2 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                        Indicateurs de performance
-                    </h4>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="text-center p-6 bg-gradient-to-br from-sky-50 to-blue-50 rounded-xl border-2 border-sky-100">
-                            <div class="w-16 h-16 bg-gradient-to-br from-sky-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <p class="text-sm font-medium text-gray-600 mb-2">Temps moyen de réponse</p>
-                            <p class="text-2xl font-bold text-sky-600">
-                                <%
-                                    Integer tempsReponse = (Integer) request.getAttribute("tempsMoyenReponse");
-                                    if (tempsReponse != null && tempsReponse > 0) {
-                                %>
-                                <%= tempsReponse %> heures
-                                <%
-                                    } else {
-                                %>
-                                N/A
-                                <%
-                                    }
-                                %>
-                            </p>
-                        </div>
-
-                        <div class="text-center p-6 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl border-2 border-emerald-100">
-                            <div class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <p class="text-sm font-medium text-gray-600 mb-2">Taux de complétion</p>
-                            <p class="text-2xl font-bold text-emerald-600">
-                                <%= (expertisesTerminees != null && totalExpertises != null && totalExpertises > 0)
-                                    ? String.format("%.0f%%", (expertisesTerminees * 100.0 / totalExpertises))
-                                    : "0%" %>
-                            </p>
-                        </div>
-
-                        <div class="text-center p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border-2 border-purple-100">
-                            <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <p class="text-sm font-medium text-gray-600 mb-2">Revenu moyen/expertise</p>
-                            <p class="text-2xl font-bold text-purple-600">
-                                <%= (revenusTotal != null && expertisesTerminees != null && expertisesTerminees > 0)
-                                    ? String.format("%.2f", revenusTotal / expertisesTerminees)
-                                    : "0.00" %> €
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
 </div>
 
     <script>
-        // Navigation entre sections
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.section');
             sections.forEach(section => {
@@ -866,7 +711,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Filtrage des expertises
         function filterExpertises(statut) {
             const rows = document.querySelectorAll('.expertise-row');
             const buttons = document.querySelectorAll('.filter-btn');
@@ -925,7 +769,7 @@
                 closeModal(event.target.id);
             }
         });
-    </script>
+</script>
 
 </body>
 </html>

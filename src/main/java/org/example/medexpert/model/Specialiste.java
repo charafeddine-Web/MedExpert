@@ -23,6 +23,9 @@ public class Specialiste extends  Utilisateur{
     @OneToMany(mappedBy = "specialiste", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Creneau> creneaux;
 
+    @Column(nullable = true)
+    private Double tarif;
+
     public Specialiste() {}
 
 
@@ -62,11 +65,20 @@ public class Specialiste extends  Utilisateur{
         this.creneaux = creneaux;
     }
 
+    public Double getTarif() {
+        return tarif;
+    }
+
+    public void setTarif(Double tarif) {
+        this.tarif = tarif;
+    }
+
     @Override
     public String toString() {
         return "Specialiste{" +
                 "id=" + id +
                 ", specialite='" + specialite + '\'' +
+                ", tarif=" + tarif +
                 '}';
     }
 }

@@ -61,6 +61,14 @@ public class Creneau {
         this.disponible = disponible;
     }
 
+    public Specialiste getSpecialiste() {
+        return specialiste;
+    }
+
+    public void setSpecialiste(Specialiste specialiste) {
+        this.specialiste = specialiste;
+    }
+
     @Override
     public String toString() {
         return "Creneau{" +
