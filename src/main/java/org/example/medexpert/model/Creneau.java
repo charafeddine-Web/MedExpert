@@ -18,7 +18,7 @@ public class Creneau {
     private LocalDateTime dateFin;
 
     @Column(nullable = false)
-    private Boolean disponible;
+    private Boolean disponible = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specialiste_id", nullable = false)

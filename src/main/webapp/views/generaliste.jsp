@@ -242,7 +242,6 @@
 %>
 
 <div class="flex w-full min-h-screen">
-    <!-- Sidebar Navigation -->
     <nav class="fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 text-slate-700 flex flex-col z-50 h-screen">
         <div class="p-8">
             <div class="flex items-center space-x-3 mb-8">
@@ -714,7 +713,7 @@
 
                         <div class="lg:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Créneau souhaité</label>
-                            <select id="creneauSelect" name="creneauId"
+                            <select id="creneauSelect" name="creneauId" required
                                     class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none">
                                 <option value="">-- Sélectionner d'abord un spécialiste --</option>
                             </select>

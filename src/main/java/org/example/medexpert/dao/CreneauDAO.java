@@ -52,7 +52,7 @@ public class CreneauDAO {
 
         try {
             TypedQuery<Creneau> query = em.createQuery(
-                    "SELECT c FROM Creneau c WHERE c.dateDebut >= :debutJour AND c.dateDebut < :finJour AND c.specialiste.id = :idSpecialiste",
+                    "SELECT c FROM Creneau c WHERE c.dateDebut >= :debutJour AND c.dateDebut < :finJour AND c.specialiste.id = :idSpecialiste AND c.disponible = true",
                     Creneau.class
             );
             query.setParameter("debutJour", debutJour);

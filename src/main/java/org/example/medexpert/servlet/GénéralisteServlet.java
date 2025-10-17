@@ -251,17 +251,19 @@ public class GénéralisteServlet extends HttpServlet {
                 }
                 de.setSpecialiste(specialiste);
                 
-//                // Ajouter le créneau si sélectionné
-//                if (creneauIdParam != null && !creneauIdParam.isEmpty()) {
-//                    try {
-//                        Long creneauId = Long.parseLong(creneauIdParam);
-//                        Creneau creneau = creneauDAO.findById(creneauId);
-//                        if (creneau != null) {
-//                            de.setCreneau(creneau);
-//                        }
-//                    } catch (NumberFormatException e) {
-//                    }
-//                }
+                if (creneauIdParam != null && !creneauIdParam.isEmpty()) {
+                    try {
+                        Long creneauId = Long.parseLong(creneauIdParam);
+                        Creneau creneau = creneauDAO.findById(creneauId);
+                        if (creneau != null) {
+                            de.setCreneau(creneau);
+
+                            creneau.setDisponible(false);
+                            creneauDAO.update(creneau);
+                        }
+                    } catch (NumberFormatException e) {
+                    }
+                }
 
             } else {
                 HttpSession sessionErr2 = request.getSession();
@@ -271,6 +273,9 @@ public class GénéralisteServlet extends HttpServlet {
             }
 
             deDao.create(de);
+
+
+
 
             HttpSession sessionOk = request.getSession();
             sessionOk.setAttribute("successMessage", "Demande d'expertise créée avec succès.");
