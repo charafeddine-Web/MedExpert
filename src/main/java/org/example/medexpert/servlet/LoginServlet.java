@@ -31,7 +31,7 @@ public class LoginServlet extends HttpServlet {
         if (u != null) {
             session.setAttribute("user",  u);
 
-            String redirectUrl = "views/patient.jsp";
+            String redirectUrl = "error.jsp";
 
             switch (u.getRole()) {
                 case MEDECIN_GENERALISTE:
@@ -42,9 +42,6 @@ public class LoginServlet extends HttpServlet {
                     break;
                 case MEDECIN_SPECIALISTE:
                     redirectUrl = request.getContextPath() + "/specialiste";
-                    break;
-                case PATIENT:
-                    redirectUrl = "views/patient.jsp";
                     break;
                 default:
                     redirectUrl = "views/login.jsp";

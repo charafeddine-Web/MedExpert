@@ -10,6 +10,7 @@ import org.example.medexpert.dao.*;
 import org.example.medexpert.model.*;
 import org.example.medexpert.model.enums.StatutConsultation;
 import org.example.medexpert.model.enums.StatutExpertise;
+import org.example.medexpert.model.enums.StatutPatient;
 import org.example.medexpert.model.enums.TypeActe;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ public class GénéralisteServlet extends HttpServlet {
     private PatientDAO patientDAO = new PatientDAO();
     private ConsultationDAO consultationDAO = new ConsultationDAO();
     private ActeMedicalDAO acteDAO = new ActeMedicalDAO();
+    private CreneauDAO creneauDAO = new CreneauDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -59,21 +61,8 @@ public class GénéralisteServlet extends HttpServlet {
             Long patientId = Long.parseLong(request.getParameter("patientId"));
             request.setAttribute("patientId", patientId);
             request.getRequestDispatcher("/views/generaliste.jsp").forward(request, response);
-        } else if ("demandeExpertise".equals(action)) {
-            Long consultationId = Long.parseLong(request.getParameter("consultationId"));
-            Consultation cons = consultationDAO.findById(consultationId);
-            if (cons == null || cons.getStatut() != StatutConsultation.EN_ATTENTE_AVIS_SPECIALISTE) {
-                HttpSession sessionErr = request.getSession();
-                sessionErr.setAttribute("errorMessage", "Consultation invalide pour une expertise.");
-                response.sendRedirect(request.getContextPath() + "/generaliste");
-                return;
-            }
-            org.example.medexpert.dao.SpecialisteDAO specialisteDAO = new org.example.medexpert.dao.SpecialisteDAO();
-            java.util.List<org.example.medexpert.model.Specialiste> specialistes = specialisteDAO.findAll();
-            request.setAttribute("consultation", cons);
-            request.setAttribute("specialistes", specialistes);
-            request.getRequestDispatcher("/views/expertise.jsp").forward(request, response);
-        } else {
+        }
+         else {
             request.getRequestDispatcher("/views/generaliste.jsp").forward(request, response);
         }
     }
@@ -125,7 +114,10 @@ public class GénéralisteServlet extends HttpServlet {
             consultation.setCout(Double.parseDouble(coutParam));
 
             consultationDAO.create(consultation);
-            session.setAttribute("successMessage", "Consultation créée avec succès.");
+            patient.setStatus(StatutPatient.TERMINE);
+            patientDAO.update(patient);
+            
+            session.setAttribute("successMessage", "Consultation créée avec succès. Statut du patient mis à jour.");
             response.sendRedirect(request.getContextPath() + "/generaliste");
 
         } else if ("/generaliste/actes".equals(servletPath)) {
@@ -155,12 +147,14 @@ public class GénéralisteServlet extends HttpServlet {
             sessionActe.setAttribute("successMessage", "Acte médical enregistré avec succès.");
             response.sendRedirect(request.getContextPath() + "/generaliste");
         } else if ("/generaliste/expertise".equals(servletPath)) {
+
             Long consultationId = Long.parseLong(request.getParameter("consultationId"));
             String question = request.getParameter("question");
             String priorite = request.getParameter("priorite");
             String specialisteIdParam = request.getParameter("specialisteId");
 
             Consultation consultation = consultationDAO.findById(consultationId);
+
             if (consultation == null || consultation.getStatut() != StatutConsultation.EN_ATTENTE_AVIS_SPECIALISTE) {
                 HttpSession sessionErr = request.getSession();
                 sessionErr.setAttribute("errorMessage", "Consultation invalide pour une demande d'expertise.");
@@ -178,8 +172,8 @@ public class GénéralisteServlet extends HttpServlet {
 
             if (specialisteIdParam != null && !specialisteIdParam.isEmpty()) {
                 Long specialisteId = Long.parseLong(specialisteIdParam);
-                org.example.medexpert.dao.SpecialisteDAO specialisteDAO = new org.example.medexpert.dao.SpecialisteDAO();
-                org.example.medexpert.model.Specialiste specialiste = specialisteDAO.findById(specialisteId);
+                SpecialisteDAO specialisteDAO = new SpecialisteDAO();
+               Specialiste specialiste = specialisteDAO.findById(specialisteId);
                 if (specialiste == null) {
                     HttpSession sessionErr2 = request.getSession();
                     sessionErr2.setAttribute("errorMessage", "Spécialiste introuvable.");
@@ -216,6 +210,37 @@ public class GénéralisteServlet extends HttpServlet {
             
             List<Consultation> consultations = consultationDAO.findAll();
             request.setAttribute("consultations", consultations);
+//
+//            String specIdParam = request.getParameter("specialisteId");
+//            if (specIdParam != null && !specIdParam.isEmpty()) {
+//                Long specId = Long.parseLong(specIdParam)x;
+//                SpecialisteDAO specialisteDAO = new SpecialisteDAO();
+//                Specialiste spec = specialisteDAO.findById(specId);
+//
+//                List<Creneau> creneaux = creneauDAO.findAllAjourBySpecialiste(spec.getId());
+//                request.setAttribute("creneaux", creneaux);
+//            }
+
+
+            String specIdParam = request.getParameter("specialite");
+            if (specIdParam != null && !specIdParam.isEmpty()) {
+                try {
+                    Long specId = Long.parseLong(specIdParam);
+                    SpecialisteDAO specialisteDAO = new SpecialisteDAO();
+                    Specialiste spec = specialisteDAO.findById(specId);
+
+                    if (spec != null) {
+                        List<Creneau> creneauxAujourdhui = creneauDAO.findAllAjourBySpecialiste(spec.getId());
+                        request.setAttribute("creneaux", creneauxAujourdhui);
+                        request.setAttribute("specialisteSelectionne", spec);
+                    } else {
+                        request.setAttribute("errorMessage", "Spécialiste introuvable.");
+                    }
+                } catch (NumberFormatException e) {
+                    request.setAttribute("errorMessage", "Identifiant de spécialiste invalide.");
+                }
+            }
+
 
             try {
                 SpecialisteDAO specialisteDAO = new SpecialisteDAO();
@@ -231,3 +256,5 @@ public class GénéralisteServlet extends HttpServlet {
     }
 
 }
+
+

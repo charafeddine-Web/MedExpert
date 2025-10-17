@@ -70,4 +70,17 @@ public class SpecialisteDAO {
             em.close();
         }
     }
+
+    public List<Specialiste> findBySpecialite(String specialite) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            TypedQuery<Specialiste> query = em.createQuery(
+                    "SELECT s FROM Specialiste s WHERE s.specialite = :specialite", Specialiste.class);
+            query.setParameter("specialite", specialite);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
 }

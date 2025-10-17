@@ -4,6 +4,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.example.medexpert.model.Creneau;
 import org.example.medexpert.util.JpaUtil;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class CreneauDAO {
@@ -40,6 +43,28 @@ public class CreneauDAO {
             em.close();
         }
     }
+
+    public List<Creneau> findAllAjourBySpecialiste(Long idSpecialiste) {
+        EntityManager em = JpaUtil.getEntityManager();
+        LocalDate aujourdhui = LocalDate.now();
+        LocalDateTime debutJour = aujourdhui.atStartOfDay();
+        LocalDateTime finJour = aujourdhui.plusDays(1).atStartOfDay();
+
+        try {
+            TypedQuery<Creneau> query = em.createQuery(
+                    "SELECT c FROM Creneau c WHERE c.dateDebut >= :debutJour AND c.dateDebut < :finJour AND c.specialiste.id = :idSpecialiste",
+                    Creneau.class
+            );
+            query.setParameter("debutJour", debutJour);
+            query.setParameter("finJour", finJour);
+            query.setParameter("idSpecialiste", idSpecialiste);
+
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
 
     public void update(Creneau creneau) {
         EntityManager em = JpaUtil.getEntityManager();

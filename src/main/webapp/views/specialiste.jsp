@@ -520,7 +520,7 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Tarif (EUR)</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Tarif </label>
                             <input type="number" step="0.01" min="0" name="tarif" value="<%= specialiste != null && specialiste.getTarif() != null ? specialiste.getTarif() : "" %>"
                                    class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-sky-500 focus:outline-none" placeholder="Ex: 75.00" />
                         </div>
@@ -532,7 +532,7 @@
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
-                                        <span class="text-xs text-gray-500">Sélection: 30 min, lun → sam (dim caché)</span>
+                                        <span class="text-xs text-gray-500">Sélection: 30 min, lun → ven (dim & sam caché)</span>
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <button id="save-slots" type="button" class="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-sm font-semibold">Enregistrer</button>

@@ -26,11 +26,19 @@ public class PatientService {
         return patientDAO.findById(id);
     }
 
+    public Patient findById(Long id) {
+        return patientDAO.findById(id);
+    }
+
     public List<Patient> listerPatients() {
         return patientDAO.findAll();
     }
 
     public void mettreAJourPatient(Patient patient) {
+        patientDAO.update(patient);
+    }
+
+    public void updatePatient(Patient patient) {
         patientDAO.update(patient);
     }
 

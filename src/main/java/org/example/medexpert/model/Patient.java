@@ -1,6 +1,7 @@
 package org.example.medexpert.model;
 
 import jakarta.persistence.*;
+import org.example.medexpert.model.enums.StatutPatient;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,6 +37,10 @@ public class Patient {
     @Column(nullable = false)
     private String traitementsEnCours;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatutPatient status;
+
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     private DossierMedical dossier;
 
@@ -52,7 +57,7 @@ public class Patient {
 //        this.signesVitaux = signesVitaux;
 //    }
 
-    public Patient(Long id, String nom, String prenom, LocalDateTime dateArrivee, String adresse, Boolean mutuelle, String numSecuriteSociale, String antecedents, String allergies, String traitementsEnCours, DossierMedical dossier) {
+    public Patient(Long id, String nom, String prenom, LocalDateTime dateArrivee, String adresse, Boolean mutuelle, String numSecuriteSociale, String antecedents, String allergies, String traitementsEnCours, StatutPatient status, DossierMedical dossier) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
@@ -63,6 +68,7 @@ public class Patient {
         this.antecedents = antecedents;
         this.allergies = allergies;
         this.traitementsEnCours = traitementsEnCours;
+        this.status = status;
         this.dossier = dossier;
     }
 
@@ -95,6 +101,9 @@ public class Patient {
 
     public String getTraitementsEnCours() { return traitementsEnCours; }
     public void setTraitementsEnCours(String traitementsEnCours) { this.traitementsEnCours = traitementsEnCours; }
+
+    public StatutPatient getStatus() { return status; }
+    public void setStatus(StatutPatient status) { this.status = status; }
 
     public DossierMedical getDossier() { return dossier; }
     public void setDossier(DossierMedical dossier) { this.dossier = dossier; }

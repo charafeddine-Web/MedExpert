@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.medexpert.model.Patient;
 import org.example.medexpert.model.SigneVital;
+import org.example.medexpert.model.enums.StatutPatient;
 import org.example.medexpert.service.InfirmierService;
 import org.example.medexpert.service.PatientService;
 import org.example.medexpert.service.SigneVitalService;
@@ -21,6 +22,13 @@ import java.util.List;
 public class InfirmierServlet extends HttpServlet {
     private final PatientService patientService = new PatientService();
     private final SigneVitalService signeVitalService = new SigneVitalService();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        List<Patient> patientsDuJour = patientService.getPatientsDuJour();
+        req.setAttribute("patientsDuJour", patientsDuJour);
+        req.getRequestDispatcher("/views/infirmier.jsp").forward(req, res);
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -70,6 +78,7 @@ public class InfirmierServlet extends HttpServlet {
             nouveauPatient.setAntecedents(antecedents);
             nouveauPatient.setAllergies(allergies);
             nouveauPatient.setTraitementsEnCours(traitementsEnCours);
+            nouveauPatient.setStatus(StatutPatient.EN_ATTENTE);
 
             patientService.creerPatient(nouveauPatient);
 

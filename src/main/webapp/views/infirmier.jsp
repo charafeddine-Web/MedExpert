@@ -107,6 +107,18 @@
             const success = document.getElementById('messageSuccess');
             if(success) success.style.display = 'none';
         }, 5000);
+
+        function clearForm() {
+            const form = document.querySelector('form');
+            if (form) {
+                form.reset();
+                // Clear any patient existing data
+                const patientExistant = document.querySelector('[name="patientExistant"]');
+                if (patientExistant) {
+                    patientExistant.remove();
+                }
+            }
+        }
     </script>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -265,8 +277,11 @@
                     <input type="number" step="1" name="taille" placeholder="Taille" required class="input-modern border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none" />
                     <% } %>
 
-                    <div class="col-span-full flex justify-end mt-6">
-                        <button type="submit" class="gradient-bg hover:opacity-90 text-white font-bold py-4 px-10 rounded-xl shadow-lg transition transform hover:scale-105 flex items-center space-x-2">
+                    <div class="col-span-full flex justify-between mt-6">
+                        <button type="button" onclick="clearForm()" class="px-8 py-4 rounded-xl border-2 border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition">
+                            Vider le formulaire
+                        </button>
+                        <button type="submit" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-4 px-10 rounded-xl shadow-lg transition transform hover:scale-105 flex items-center space-x-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                             </svg>
@@ -280,12 +295,12 @@
         <section id="liste" class="w-full max-w-6xl mx-auto py-10 fade-in">
             <div class="glass-effect rounded-2xl shadow-2xl p-8 card-hover">
                 <div class="flex items-center space-x-3 mb-8">
-                    <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center">
+                    <div class="w-12 h-12 bg-sky-600 rounded-xl flex items-center justify-center">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
                     </div>
-                    <h3 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Patients du jour</h3>
+                    <h3 class="text-3xl font-bold text-slate-900">Patients du jour</h3>
                 </div>
 
                 <div class="overflow-x-auto rounded-xl">
@@ -295,8 +310,7 @@
                             <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Nom</th>
                             <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Prénom</th>
                             <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Date d'arrivée</th>
-                            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Adresse</th>
-                            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Mutuelle</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Statut</th>
                         </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -310,15 +324,18 @@
                             <td class="px-6 py-4 text-gray-800 font-medium"><%= p.getNom() %></td>
                             <td class="px-6 py-4 text-gray-800"><%= p.getPrenom() %></td>
                             <td class="px-6 py-4 text-gray-600"><%= p.getDateArrivee() %></td>
-                            <td class="px-6 py-4 text-gray-600"><%= p.getAdresse() %></td>
-                            <td class="px-6 py-4 text-gray-600"><%= p.getMutuelle() %></td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold <%= p.getStatus() != null && p.getStatus().name().equals("EN_ATTENTE") ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800" %>">
+                                    <%= p.getStatus() != null ? p.getStatus().name() : "EN_ATTENTE" %>
+                                </span>
+                            </td>
                         </tr>
                         <%
                             }
                         } else {
                         %>
                         <tr>
-                            <td colspan="5" class="text-center py-12">
+                            <td colspan="4" class="text-center py-12">
                                 <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
                                 </svg>

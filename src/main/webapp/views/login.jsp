@@ -32,6 +32,10 @@
         <button type="submit" class="w-full py-2 mt-2 rounded bg-sky-600 hover:bg-sky-700 text-white font-semibold text-lg shadow">Se connecter</button>
     </form>
     <div class="mt-6 text-gray-500 text-sm text-center">
+        Inscription ? <a href="<%=request.getContextPath()%>/views/register.jsp" class="text-sky-600 hover:underline font-semibold">Inscription</a>
+    </div>
+
+    <div class="mt-6 text-gray-500 text-sm text-center">
         © <%= java.time.Year.now() %> MedExpert. Tous droits réservés.
     </div>
 </div>

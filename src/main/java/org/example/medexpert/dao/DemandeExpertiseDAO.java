@@ -44,7 +44,6 @@ public class DemandeExpertiseDAO {
     public List<DemandeExpertise> findAllBySpecialisteIdWithDetails(Long specialisteId) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            // Load consultation and nested relations needed by JSP to avoid LazyInitializationException
             TypedQuery<DemandeExpertise> query = em.createQuery(
                     "SELECT d FROM DemandeExpertise d " +
                             "LEFT JOIN FETCH d.consultation c " +

@@ -1,8 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="org.example.medexpert.model.Patient" %>
-<%@ page import="org.example.medexpert.model.Consultation" %>
-<%@ page import="org.example.medexpert.model.Utilisateur" %>
+<%@ page import="org.example.medexpert.model.*" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -625,6 +623,24 @@
                 <form action="<%=request.getContextPath()%>/generaliste/expertise" method="post" class="space-y-6">
                     <input type="hidden" id="expertiseConsultationId" name="consultationId" />
 
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Spécialité</label>
+                        <select id="specialiteSelect"
+                                class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none">
+                            <option value="">-- Sélectionner une spécialité --</option>
+                            <option value="Cardiologie">Cardiologie</option>
+                            <option value="Pneumologie">Pneumologie</option>
+                            <option value="Neurologie">Neurologie</option>
+                            <option value="Gastro-entérologie">Gastro-entérologie</option>
+                            <option value="Endocrinologie">Endocrinologie</option>
+                            <option value="Dermatologie">Dermatologie</option>
+                            <option value="Rhumatologie">Rhumatologie</option>
+                            <option value="Psychiatrie">Psychiatrie</option>
+                            <option value="Néphrologie">Néphrologie</option>
+                            <option value="Orthopédie">Orthopédie</option>
+                        </select>
+                    </div>
+
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="lg:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Spécialiste</label>
@@ -632,9 +648,9 @@
                                     class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none">
                                 <option value="">-- Sélectionner un spécialiste --</option>
                                 <%
-                                    java.util.List<org.example.medexpert.model.Specialiste> specialistes = (java.util.List<org.example.medexpert.model.Specialiste>) request.getAttribute("specialistes");
+                                    List<Specialiste> specialistes = (List<Specialiste>) request.getAttribute("specialistes");
                                     if (specialistes != null) {
-                                        for (org.example.medexpert.model.Specialiste s : specialistes) {
+                                        for (Specialiste s : specialistes) {
                                 %>
                                 <option value="<%= s.getId() %>"><%= s.getPrenom() %> <%= s.getNom() %></option>
                                 <%
@@ -650,7 +666,7 @@
                                     class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-purple-500 focus:outline-none">
                                 <option value="">-- Sélectionner un créneau (optionnel) --</option>
                                 <%
-                                    java.util.List<org.example.medexpert.model.Creneau> creneaux = (java.util.List<org.example.medexpert.model.Creneau>) request.getAttribute("creneaux");
+                                    List<Creneau> creneaux = (List<Creneau>) request.getAttribute("creneaux");
                                     if (creneaux != null) {
                                         for (org.example.medexpert.model.Creneau c : creneaux) {
                                 %>

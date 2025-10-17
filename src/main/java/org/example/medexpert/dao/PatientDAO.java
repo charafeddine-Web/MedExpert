@@ -3,6 +3,7 @@ package org.example.medexpert.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.example.medexpert.model.Patient;
+import org.example.medexpert.model.enums.StatutPatient;
 import org.example.medexpert.util.JpaUtil;
 
 import java.time.LocalDate;
@@ -113,9 +114,10 @@ public class PatientDAO {
         LocalDate aujourdHui = LocalDate.now();
 
         try {
-            String jpql = "SELECT p FROM Patient p WHERE DATE(p.dateArrivee) = :today ORDER BY p.dateArrivee ASC";
+            String jpql = "SELECT p FROM Patient p WHERE DATE(p.dateArrivee) = :today AND p.status = :status ORDER BY p.dateArrivee ASC";
             TypedQuery<Patient> query = em.createQuery(jpql, Patient.class);
             query.setParameter("today", aujourdHui);
+            query.setParameter("status", StatutPatient.EN_ATTENTE);
             return query.getResultList();
         } finally {
             em.close();

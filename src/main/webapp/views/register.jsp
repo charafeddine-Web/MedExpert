@@ -79,7 +79,6 @@
                             class="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-400 bg-gray-50 transition"
                             onchange="handleRoleChange()">
                         <option value="">Sélectionnez un rôle</option>
-                        <option value="PATIENT">Patient</option>
                         <option value="INFIRMIER">Infirmier</option>
                         <option value="MEDECIN_GENERALISTE">Généraliste</option>
                         <option value="MEDECIN_SPECIALISTE">Spécialiste</option>
