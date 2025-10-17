@@ -80,7 +80,7 @@ public class InfirmierServlet extends HttpServlet {
             nouveauPatient.setTraitementsEnCours(traitementsEnCours);
             nouveauPatient.setStatus(StatutPatient.EN_ATTENTE);
 
-            patientService.creerPatient(nouveauPatient);
+            patientService.createPatient(nouveauPatient);
 
             SigneVital signeVital = new SigneVital();
             signeVital.setTension(Double.valueOf(req.getParameter("tension")));

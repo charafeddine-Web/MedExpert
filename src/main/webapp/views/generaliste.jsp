@@ -746,7 +746,6 @@
                 </form>
             </div>
         </section>
-
         <!-- Liste des consultations récentes -->
         <section class="w-full max-w-7xl mx-auto py-6 fade-in">
             <div class="glass-effect rounded-2xl shadow-2xl p-8 card-hover">

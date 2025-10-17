@@ -13,20 +13,18 @@ public class PatientService {
     private final PatientDAO patientDAO = new PatientDAO();
     private final DossierMedicalDAO dossierMedicalDAO = new DossierMedicalDAO();
 
-    public void creerPatient(Patient patient) {
-        patientDAO.create(patient);
 
+    public void createPatient(Patient patient) {
+        patientDAO.create(patient);
+        
         DossierMedical dossier = new DossierMedical();
         dossier.setPatient(patient);
         dossier.setDateCreation(LocalDateTime.now());
         dossierMedicalDAO.create(dossier);
+        
     }
 
-    public Patient trouverParId(Long id) {
-        return patientDAO.findById(id);
-    }
-
-    public Patient findById(Long id) {
+    public Patient getPatientById(Long id) {
         return patientDAO.findById(id);
     }
 

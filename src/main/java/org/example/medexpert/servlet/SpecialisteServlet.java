@@ -57,7 +57,6 @@ public class SpecialisteServlet extends HttpServlet {
             }
         }
 
-        // S'assurer que le spécialiste a ses créneaux chargés
         if (specialiste != null) {
             specialiste = specialisteDAO.findById(specialiste.getId());
             request.getSession().setAttribute("user", specialiste);

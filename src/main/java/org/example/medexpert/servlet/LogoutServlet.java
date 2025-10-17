@@ -12,13 +12,12 @@ import java.io.IOException;
 
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
-     UtilisateurService utilisateurService = new UtilisateurService();
     @Override
     protected  void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException , IOException {
 
         HttpSession session = req.getSession(false);
         if (session != null) {
-            utilisateurService.logout(session);
+            session.invalidate();
         }
         res.sendRedirect("views/login.jsp");
 

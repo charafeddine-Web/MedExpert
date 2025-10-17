@@ -19,6 +19,38 @@ public class LoginServlet extends HttpServlet {
 
     private final UtilisateurService utilisateurService = new UtilisateurService();
 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+
+        if (session != null && session.getAttribute("user") != null) {
+            Utilisateur user = (Utilisateur) session.getAttribute("user");
+
+            String redirectUrl;
+            switch (user.getRole()) {
+                case MEDECIN_GENERALISTE:
+                    redirectUrl = request.getContextPath() + "/generaliste";
+                    break;
+                case INFIRMIER:
+                    redirectUrl = request.getContextPath() + "/infirmier";
+                    break;
+                case MEDECIN_SPECIALISTE:
+                    redirectUrl = request.getContextPath() + "/specialiste";
+                    break;
+                default:
+                    redirectUrl = request.getContextPath() + "/views/login.jsp";
+                    break;
+            }
+
+            response.sendRedirect(redirectUrl);
+            return;
+        }
+
+        request.getRequestDispatcher("views/login.jsp").forward(request, response);
+    }
+
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
