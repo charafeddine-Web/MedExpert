@@ -12,6 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module Spécialiste - MedExpert</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
@@ -195,6 +197,57 @@
 
         .section.active {
             display: block;
+        }
+
+        /* FullCalendar custom theme overrides */
+        #calendar {
+            min-height: 640px;
+        }
+        .fc-theme-standard .fc-scrollgrid,
+        .fc .fc-daygrid-body,
+        .fc .fc-timegrid-body {
+            border-radius: 0.75rem; /* rounded-xl */
+            border-color: #e5e7eb; /* gray-200 */
+        }
+        .fc .fc-toolbar.fc-header-toolbar {
+            margin-bottom: 0.75rem;
+        }
+        .fc .fc-toolbar-title {
+            font-weight: 700;
+            font-size: 1.125rem; /* text-lg */
+            background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .fc .fc-button {
+            border: none;
+            background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+            color: #fff;
+            border-radius: 0.5rem;
+            padding: 0.4rem 0.75rem;
+            box-shadow: 0 4px 10px rgba(14,165,233,0.2);
+        }
+        .fc .fc-button:hover { opacity: 0.92; }
+        .fc .fc-button:disabled { opacity: 0.6; }
+        .fc .fc-col-header-cell-cushion {
+            font-weight: 600;
+            color: #334155; /* slate-700 */
+        }
+        .fc .fc-timegrid-slot {
+            height: 2.25rem; /* tighter rows */
+        }
+        .fc .fc-timegrid-axis-cushion,
+        .fc .fc-timegrid-slot-label-cushion {
+            color: #64748b; /* slate-500 */
+            font-size: 0.75rem;
+        }
+        .fc .fc-event {
+            border-radius: 0.5rem;
+            border: 0;
+        }
+        .fc .fc-now-indicator {
+            border-color: #ef4444; /* red-500 */
         }
     </style>
 </head>
@@ -472,32 +525,20 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-2 lg:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Les Creneau *</label>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-xs font-medium text-gray-600 mb-1">Date (Lundi uniquement)</label>
-                                    <input type="date" id="cal-date" name="dateOnly"
-                                           class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-sky-500 focus:outline-none" />
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Mes créneaux (Calendrier)</label>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs text-gray-500">Sélection: 30 min, lun → sam (dim caché)</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button id="save-slots" type="button" class="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 text-white text-sm font-semibold hover:opacity-90">Enregistrer</button>
+                                        <button id="clear-slots" type="button" class="px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 text-sm font-semibold hover:bg-gray-50">Vider</button>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-medium text-gray-600 mb-1">Début (hh:mm)</label>
-                                    <input type="time" id="cal-start" value="09:00"
-                                           class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-sky-500 focus:outline-none" />
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-medium text-gray-600 mb-1">Fin (hh:mm)</label>
-                                    <input type="time" id="cal-end" value="17:00"
-                                           class="input-modern w-full border-2 border-gray-200 rounded-xl px-5 py-3.5 focus:border-sky-500 focus:outline-none" />
-                                </div>
-                                <div class="md:col-span-3">
-                                    <button type="button" id="gen-slots"
-                                            class="px-5 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold hover:opacity-90">Générer les créneaux (30 min)</button>
-                                </div>
-                                <div class="md:col-span-3">
-                                    <div id="slots-container" class="grid grid-cols-2 md:grid-cols-3 gap-2"></div>
-                                </div>
+                                <div id="calendar" class="glass-effect rounded-2xl p-4 border-2 border-gray-100 shadow-sm w-full" style="height: 700px;"></div>
                             </div>
                         </div>
                         <div>
@@ -709,6 +750,16 @@
     </main>
 </div>
 
+    <script type="application/json" id="creneaux-data">
+    [
+    <% if (specialiste != null && specialiste.getCreneaux() != null) { 
+         java.util.Iterator<org.example.medexpert.model.Creneau> it = specialiste.getCreneaux().iterator();
+         while (it.hasNext()) { org.example.medexpert.model.Creneau c = it.next(); %>
+        {"title":"Créneau","start":"<%= c.getDateDebut() != null ? c.getDateDebut().toString() : "" %>","end":"<%= c.getDateFin() != null ? c.getDateFin().toString() : "" %>","color":"<%= Boolean.TRUE.equals(c.getDisponible()) ? "#10b981" : "#ef4444" %>"}<%= it.hasNext() ? "," : "" %>
+    <% } } %>
+    ]
+    </script>
+
     <script>
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.section');
@@ -778,92 +829,106 @@
             }
         });
 
-        // Calendar restrictions and slot generation (Mondays only, 30-min slots)
-        const dateInput = document.getElementById('cal-date');
-        const startInput = document.getElementById('cal-start');
-        const endInput = document.getElementById('cal-end');
-        const genBtn = document.getElementById('gen-slots');
-        const slotsContainer = document.getElementById('slots-container');
+        // FullCalendar integration for specialist creneaux
 
-        function isMonday(dateStr) {
-            const d = new Date(dateStr);
-            return d.getDay() === 1; // 1 = Monday
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            if (!calendarEl) return;
 
-        function toLocalDateTime(dateStr, timeStr) {
-            return new Date(dateStr + 'T' + timeStr);
-        }
+            const jsonTag = document.getElementById('creneaux-data');
+            let existingEvents = [];
+            if (jsonTag && jsonTag.textContent) {
+                try { existingEvents = JSON.parse(jsonTag.textContent); } catch (e) { existingEvents = []; }
+            }
 
-        function formatForServer(dt) {
-            const pad = n => (n < 10 ? '0' + n : n);
-            return dt.getFullYear() + '-' + pad(dt.getMonth()+1) + '-' + pad(dt.getDate()) + 'T' + pad(dt.getHours()) + ':' + pad(dt.getMinutes());
-        }
+            const pendingSlots = [];
 
-        function renderSlots(slots) {
-            slotsContainer.innerHTML = '';
-            slots.forEach(s => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'px-3 py-2 rounded-lg border-2 border-sky-200 hover:border-sky-400 text-sm text-gray-700';
-                btn.textContent = s.label;
-                btn.addEventListener('click', () => {
-                    // Submit slot directly to backend as a new creneau
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '<%=request.getContextPath()%>/specialiste/creneau';
-
-                    const startField = document.createElement('input');
-                    startField.type = 'hidden';
-                    startField.name = 'dateDebut';
-                    startField.value = s.startIso;
-
-                    const endField = document.createElement('input');
-                    endField.type = 'hidden';
-                    endField.name = 'dateFin';
-                    endField.value = s.endIso;
-
-                    form.appendChild(startField);
-                    form.appendChild(endField);
-                    document.body.appendChild(form);
-                    form.submit();
-                });
-                slotsContainer.appendChild(btn);
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                locale: 'fr',
+                firstDay: 1,
+                slotDuration: '00:30:00',
+                slotMinTime: '08:00:00',
+                slotMaxTime: '19:00:00',
+                allDaySlot: false,
+                weekends: false,
+                expandRows: true,
+                contentHeight: 740,
+                height: 840,
+                businessHours: {
+                    daysOfWeek: [1,2,3,4,5,6],
+                    startTime: '09:00',
+                    endTime: '18:00'
+                },
+                slotLabelFormat: {
+                    hour: '2-digit', minute: '2-digit', hour12: false
+                },
+                selectable: true,
+                selectMirror: true,
+                nowIndicator: true,
+                unselectAuto: false,
+                longPressDelay: 0,
+                selectMinDistance: 1,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'timeGridWeek,timeGridDay'
+                },
+                events: existingEvents,
+                selectAllow: function(info) {
+                    const start = info.start; const end = info.end;
+                    const day = start.getDay();
+                    const isMonToSat = day >= 1 && day <= 6;
+                    const diff = (end - start) / (1000 * 60);
+                    return isMonToSat && diff === 30;
+                },
+                select: function(info) {
+                    // Toggle selection: if an identical temp slot exists, remove it; else add it
+                    const key = info.startStr.substring(0,16) + '|' + info.endStr.substring(0,16);
+                    const existingIdx = pendingSlots.findIndex(s => s.key === key);
+                    if (existingIdx >= 0) {
+                        const removed = pendingSlots.splice(existingIdx, 1)[0];
+                        const ev = calendar.getEventById(removed.id);
+                        if (ev) ev.remove();
+                        return;
+                    }
+                    const tempId = 'temp-' + Math.random().toString(36).slice(2);
+                    pendingSlots.push({ key, start: info.startStr.substring(0,16), end: info.endStr.substring(0,16), id: tempId });
+                    calendar.unselect();
+                    calendar.addEvent({ id: tempId, title: 'Nouveau', start: info.start, end: info.end, color: '#38bdf8' });
+                }
             });
-        }
+            calendar.render();
 
-        genBtn && genBtn.addEventListener('click', () => {
-            const dateStr = dateInput && dateInput.value;
-            const startStr = startInput && startInput.value;
-            const endStr = endInput && endInput.value;
-            if (!dateStr || !startStr || !endStr) {
-                alert('Veuillez choisir la date, l\'heure de début et de fin.');
-                return;
-            }
-            if (!isMonday(dateStr)) {
-                alert('Veuillez sélectionner un lundi.');
-                return;
-            }
-            const start = toLocalDateTime(dateStr, startStr);
-            const end = toLocalDateTime(dateStr, endStr);
-            if (end <= start) {
-                alert('L\'heure de fin doit être après l\'heure de début.');
-                return;
-            }
-            const slots = [];
-            const durationMinutes = 30;
-            let cur = new Date(start.getTime());
-            while (cur < end) {
-                const next = new Date(cur.getTime() + durationMinutes * 60000);
-                if (next > end) break;
-                const label = cur.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) + ' - ' + next.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
-                slots.push({
-                    label,
-                    startIso: formatForServer(cur),
-                    endIso: formatForServer(next)
+            // Batch actions
+            const saveBtn = document.getElementById('save-slots');
+            const clearBtn = document.getElementById('clear-slots');
+
+            saveBtn && saveBtn.addEventListener('click', function() {
+                if (pendingSlots.length === 0) {
+                    alert('Aucun créneau sélectionné.');
+                    return;
+                }
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '<%=request.getContextPath()%>/specialiste/creneau';
+                pendingSlots.forEach((s, idx) => {
+                    const sIn = document.createElement('input'); sIn.type='hidden'; sIn.name='dateDebut'; sIn.value=s.start;
+                    const eIn = document.createElement('input'); eIn.type='hidden'; eIn.name='dateFin'; eIn.value=s.end;
+                    form.appendChild(sIn); form.appendChild(eIn);
                 });
-                cur = next;
-            }
-            renderSlots(slots);
+                document.body.appendChild(form);
+                form.submit();
+            });
+
+            clearBtn && clearBtn.addEventListener('click', function() {
+                pendingSlots.forEach(s => {
+                    const ev = calendar.getEventById(s.id);
+                    if (ev) ev.remove();
+                });
+                pendingSlots.length = 0;
+                calendar.unselect();
+            });
         });
 </script>
 

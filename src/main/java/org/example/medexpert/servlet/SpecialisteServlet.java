@@ -96,19 +96,43 @@ public class SpecialisteServlet extends HttpServlet {
             }
             response.sendRedirect(request.getContextPath() + "/specialiste");
         } else if ("/specialiste/creneau".equals(servletPath)) {
-            String dateDebut = request.getParameter("dateDebut");
-            String dateFin = request.getParameter("dateFin");
+            String[] datesDebut = request.getParameterValues("dateDebut");
+            String[] datesFin = request.getParameterValues("dateFin");
             try {
-                if (dateDebut != null && dateFin != null && !dateDebut.isBlank() && !dateFin.isBlank()) {
-                    Creneau c = new Creneau();
-                    c.setDateDebut(LocalDateTime.parse(dateDebut));
-                    c.setDateFin(LocalDateTime.parse(dateFin));
-                    c.setDisponible(true);
-                    c.setSpecialiste(specialiste);
-                    creneauDAO.create(c);
-                    request.getSession().setAttribute("successMessage", "Créneau ajouté.");
+                if (datesDebut != null && datesFin != null && datesDebut.length == datesFin.length && datesDebut.length > 0) {
+                    int created = 0;
+                    for (int i = 0; i < datesDebut.length; i++) {
+                        String dDeb = datesDebut[i];
+                        String dFin = datesFin[i];
+                        if (dDeb == null || dFin == null || dDeb.isBlank() || dFin.isBlank()) continue;
+                        Creneau c = new Creneau();
+                        c.setDateDebut(LocalDateTime.parse(dDeb));
+                        c.setDateFin(LocalDateTime.parse(dFin));
+                        c.setDisponible(true);
+                        c.setSpecialiste(specialiste);
+                        creneauDAO.create(c);
+                        created++;
+                    }
+                    if (created > 0) {
+                        request.getSession().setAttribute("successMessage", created + " créneau(x) ajoutés.");
+                    } else {
+                        request.getSession().setAttribute("infoMessage", "Aucun créneau valide à enregistrer.");
+                    }
                 } else {
-                    request.getSession().setAttribute("errorMessage", "Veuillez renseigner les dates de début et fin.");
+                    // Fallback single
+                    String dateDebut = request.getParameter("dateDebut");
+                    String dateFin = request.getParameter("dateFin");
+                    if (dateDebut != null && dateFin != null && !dateDebut.isBlank() && !dateFin.isBlank()) {
+                        Creneau c = new Creneau();
+                        c.setDateDebut(LocalDateTime.parse(dateDebut));
+                        c.setDateFin(LocalDateTime.parse(dateFin));
+                        c.setDisponible(true);
+                        c.setSpecialiste(specialiste);
+                        creneauDAO.create(c);
+                        request.getSession().setAttribute("successMessage", "Créneau ajouté.");
+                    } else {
+                        request.getSession().setAttribute("errorMessage", "Veuillez renseigner les dates de début et fin.");
+                    }
                 }
             } catch (Exception e) {
                 request.getSession().setAttribute("errorMessage", "Erreur lors de l'ajout du créneau: " + e.getMessage());
@@ -186,12 +210,6 @@ public class SpecialisteServlet extends HttpServlet {
             request.setAttribute("expertisesEnCours", enCours);
             request.setAttribute("expertisesTerminees", terminees);
             request.setAttribute("revenusTotal", revenusTotal);
-
-            // Load creneaux for calendar display
-            try {
-                List<Creneau> creneaux = creneauDAO.findBySpecialisteId(specialiste.getId());
-                request.setAttribute("creneaux", creneaux);
-            } catch (Exception ignored) {}
 
 
             if (tempsMoyenReponse != null) {

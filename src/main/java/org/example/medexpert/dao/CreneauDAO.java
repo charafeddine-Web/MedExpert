@@ -8,9 +8,8 @@ import java.util.List;
 
 public class CreneauDAO {
 
-    EntityManager em = JpaUtil.getEntityManager();
-
     public void create(Creneau creneau) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             em.persist(creneau);
@@ -24,6 +23,7 @@ public class CreneauDAO {
     }
 
     public Creneau findById(Long id) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             return em.find(Creneau.class, id);
         } finally {
@@ -32,6 +32,7 @@ public class CreneauDAO {
     }
 
     public List<Creneau> findAll() {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             TypedQuery<Creneau> query = em.createQuery("SELECT c FROM Creneau c", Creneau.class);
             return query.getResultList();
@@ -40,20 +41,8 @@ public class CreneauDAO {
         }
     }
 
-    public List<Creneau> findBySpecialisteId(Long specialisteId) {
-        try {
-            TypedQuery<Creneau> query = em.createQuery(
-                    "SELECT c FROM Creneau c WHERE c.specialiste.id = :sid ORDER BY c.dateDebut",
-                    Creneau.class
-            );
-            query.setParameter("sid", specialisteId);
-            return query.getResultList();
-        } finally {
-            em.close();
-        }
-    }
-
     public void update(Creneau creneau) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             em.merge(creneau);
@@ -67,6 +56,7 @@ public class CreneauDAO {
     }
 
     public void delete(Long id) {
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             Creneau creneau = em.find(Creneau.class, id);

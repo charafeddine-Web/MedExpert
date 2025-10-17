@@ -10,6 +10,7 @@ import java.util.List;
 
 public class PatientDAO {
 
+
     public void create(Patient patient) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
